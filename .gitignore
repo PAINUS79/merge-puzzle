@@ -25,3 +25,7 @@ Thumbs.db
 
 # Import backups
 *.import.bak
+
+# Node modules (godot-mcp)
+node_modules/
+package-lock.json
