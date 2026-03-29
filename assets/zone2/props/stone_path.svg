@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Stone Path Tile prop -->
+  <!-- Ground base -->
+  <rect width="48" height="48" rx="4" fill="#6BBE6B"/>
+  <!-- Stones - irregular shapes arranged as path -->
+  <!-- Top-left stone -->
+  <ellipse cx="12" cy="13" rx="8" ry="5" fill="#C0B8A8" transform="rotate(-10 12 13)"/>
+  <ellipse cx="11" cy="12" rx="5" ry="3" fill="#D4CEC0" opacity="0.5"/>
+  <!-- Top-right stone -->
+  <ellipse cx="34" cy="11" rx="7" ry="4.5" fill="#B8B0A0" transform="rotate(8 34 11)"/>
+  <ellipse cx="33" cy="10" rx="4" ry="2.5" fill="#CCC8B8" opacity="0.5"/>
+  <!-- Middle stone (large) -->
+  <ellipse cx="24" cy="25" rx="10" ry="6.5" fill="#C8C0B0" transform="rotate(5 24 25)"/>
+  <ellipse cx="22" cy="24" rx="6" ry="3.5" fill="#DCD8CC" opacity="0.45"/>
+  <!-- Bottom-left stone -->
+  <ellipse cx="13" cy="38" rx="8" ry="5" fill="#B8B0A0" transform="rotate(-5 13 38)"/>
+  <ellipse cx="12" cy="37" rx="5" ry="3" fill="#CCC8B8" opacity="0.5"/>
+  <!-- Bottom-right stone -->
+  <ellipse cx="36" cy="37" rx="7" ry="4.5" fill="#C0B8A8" transform="rotate(12 36 37)"/>
+  <ellipse cx="35" cy="36" rx="4" ry="2.5" fill="#D4CEC0" opacity="0.5"/>
+  <!-- Tiny pebbles gap-filler -->
+  <circle cx="20" cy="18" r="2" fill="#A8A098"/>
+  <circle cx="30" cy="19" r="1.5" fill="#B0A8A0"/>
+  <circle cx="18" cy="32" r="1.8" fill="#A8A098"/>
+  <circle cx="32" cy="31" r="1.5" fill="#B0A8A0"/>
+  <circle cx="24" cy="35" r="1.5" fill="#A8A098"/>
+  <!-- Moss between stones -->
+  <ellipse cx="23" cy="19" rx="2" ry="1.5" fill="#5AB85A" opacity="0.5"/>
+  <ellipse cx="16" cy="25" rx="1.5" ry="1" fill="#6AC86A" opacity="0.45"/>
+  <ellipse cx="30" cy="30" rx="1.5" ry="1" fill="#5AB85A" opacity="0.45"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Apple Basket prop -->
+  <!-- Basket body -->
+  <path d="M8 24 Q8 42 24 42 Q40 42 40 24Z" fill="#8B6035"/>
+  <!-- Basket weave bands -->
+  <path d="M8 30 Q24 27 40 30" stroke="#A07040" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M9 36 Q24 33 39 36" stroke="#A07040" stroke-width="2" fill="none" opacity="0.7"/>
+  <!-- Basket top rim -->
+  <ellipse cx="24" cy="24" rx="16" ry="5" fill="#A07840"/>
+  <ellipse cx="24" cy="24" rx="14" ry="3.5" fill="#C49050" opacity="0.5"/>
+  <!-- Weave vertical lines -->
+  <path d="M14 24 Q13 33 11 42" stroke="#6B4A20" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M20 24 Q20 33 19 42" stroke="#6B4A20" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M28 24 Q28 33 29 42" stroke="#6B4A20" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M34 24 Q35 33 37 42" stroke="#6B4A20" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Apples in basket -->
+  <circle cx="18" cy="20" r="5.5" fill="#E8201A"/>
+  <circle cx="18" cy="20" r="3.5" fill="#F04030" opacity="0.55"/>
+  <circle cx="28" cy="18" r="6" fill="#CC1A10"/>
+  <circle cx="28" cy="18" r="3.8" fill="#E02820" opacity="0.55"/>
+  <circle cx="22" cy="14" r="5" fill="#E8201A"/>
+  <circle cx="22" cy="14" r="3" fill="#F04030" opacity="0.55"/>
+  <!-- Apple stems and leaves -->
+  <path d="M18 14.5 Q18.5 12 19 11" stroke="#5AB85A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M28 12 Q28.5 10 29 9" stroke="#5AB85A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M22 9 Q22.5 7 23 6" stroke="#5AB85A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Handle -->
+  <path d="M12 24 Q12 14 24 14 Q36 14 36 24" fill="none" stroke="#8B6035" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M12 24 Q12 15 24 15 Q36 15 36 24" fill="none" stroke="#A07840" stroke-width="1.5" opacity="0.4"/>
+</svg>

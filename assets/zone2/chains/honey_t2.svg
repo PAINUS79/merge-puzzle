@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Small Honeycomb - Tier 2 Honey -->
+  <!-- Single honeycomb (3x2 hex layout) -->
+  <!-- Row 1: 2 hexagons -->
+  <polygon points="18,10 22,8 26,10 26,14 22,16 18,14" fill="#D4A45A" stroke="#8B6914" stroke-width="0.8"/>
+  <polygon points="26,10 30,8 34,10 34,14 30,16 26,14" fill="#D4B460" stroke="#8B6914" stroke-width="0.8"/>
+  <!-- Row 2: 3 hexagons -->
+  <polygon points="14,16 18,14 22,16 22,20 18,22 14,20" fill="#C4944A" stroke="#8B6914" stroke-width="0.8"/>
+  <polygon points="22,16 26,14 30,16 30,20 26,22 22,20" fill="#D4A45A" stroke="#8B6914" stroke-width="0.8"/>
+  <polygon points="30,16 34,14 38,16 38,20 34,22 30,20" fill="#C4944A" stroke="#8B6914" stroke-width="0.8"/>
+  <!-- Row 3: 2 hexagons -->
+  <polygon points="18,22 22,20 26,22 26,26 22,28 18,26" fill="#D4B460" stroke="#8B6914" stroke-width="0.8"/>
+  <polygon points="26,22 30,20 34,22 34,26 30,28 26,26" fill="#D4A45A" stroke="#8B6914" stroke-width="0.8"/>
+  <!-- Honey drips in some cells -->
+  <ellipse cx="22" cy="12" rx="2" ry="1.5" fill="#E8C050" opacity="0.7"/>
+  <ellipse cx="26" cy="18" rx="2" ry="1.5" fill="#FFD060" opacity="0.7"/>
+  <ellipse cx="30" cy="24" rx="2" ry="1.5" fill="#E8C050" opacity="0.7"/>
+  <!-- Small bee on side -->
+  <ellipse cx="10" cy="20" rx="4" ry="6" fill="#FFD700"/>
+  <rect x="6.5" y="19" width="7" height="2" rx="1" fill="#3A3A1A" opacity="0.8"/>
+  <ellipse cx="8" cy="16" rx="4" ry="2.5" fill="#C8E8FF" opacity="0.6" transform="rotate(-30 8 16)"/>
+  <!-- Honey drip hanging -->
+  <path d="M26 28 Q26 33 26 36" stroke="#D4A020" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="26" cy="37" rx="2.5" ry="3" fill="#E8B420"/>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Bird on Branch prop -->
+  <!-- Branch -->
+  <path d="M4 36 Q16 33 28 34 Q38 34 44 30" stroke="#8B6914" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M4 36 Q16 34 28 35 Q38 35 44 31" stroke="#A07830" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+  <!-- Small sub-branch -->
+  <path d="M20 34 Q22 28 24 24" stroke="#8B6914" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Leaves on sub-branch -->
+  <ellipse cx="22" cy="26" rx="4" ry="2.5" fill="#5AB85A" transform="rotate(-20 22 26)"/>
+  <ellipse cx="26" cy="23" rx="3.5" ry="2" fill="#6AC86A" transform="rotate(10 26 23)"/>
+  <!-- Bird body -->
+  <ellipse cx="32" cy="29" rx="8" ry="6" fill="#E8A830"/>
+  <!-- Bird wing -->
+  <ellipse cx="30" cy="30" rx="7" ry="4" fill="#D49020" transform="rotate(10 30 30)"/>
+  <ellipse cx="30" cy="30" rx="5" ry="2.5" fill="#C08010" transform="rotate(10 30 30)" opacity="0.6"/>
+  <!-- Wing feather tips -->
+  <path d="M24 32 Q27 34 30 33" stroke="#C08010" stroke-width="1" fill="none" opacity="0.7"/>
+  <path d="M25 34 Q28 36 31 35" stroke="#C08010" stroke-width="1" fill="none" opacity="0.7"/>
+  <!-- Bird tail -->
+  <path d="M40 29 Q45 28 46 25 Q44 27 43 24" fill="#D49020" stroke="#C08010" stroke-width="0.5"/>
+  <!-- Bird head -->
+  <circle cx="24" cy="25" r="6" fill="#E8A830"/>
+  <circle cx="23" cy="24.5" r="4" fill="#F0B840" opacity="0.5"/>
+  <!-- Eye -->
+  <circle cx="22" cy="24" r="2" fill="#1A1A0A"/>
+  <circle cx="22.5" cy="23.5" r="0.7" fill="white"/>
+  <!-- Beak -->
+  <path d="M20 25 Q16 26 15 27 Q17 28 20 26Z" fill="#D4A020"/>
+  <!-- Red breast/chest -->
+  <ellipse cx="28" cy="29" rx="5" ry="4" fill="#E83A2A" opacity="0.75"/>
+  <!-- Feet gripping branch -->
+  <path d="M30 34 Q29 36 27 37 M30 34 Q30 37 30 38 M30 34 Q31 36 33 37" stroke="#8B6914" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M36 34 Q35 36 33 37 M36 34 Q36 37 36 38 M36 34 Q37 36 39 37" stroke="#8B6914" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Musical notes (bird singing) -->
+  <text x="10" y="16" font-family="sans-serif" font-size="9" fill="#7EC876" opacity="0.8">♪</text>
+  <text x="4" y="10" font-family="sans-serif" font-size="7" fill="#8FD886" opacity="0.7">♫</text>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Royal Honeycomb - Tier 4 Honey -->
+  <polygon points="24,2 42,13 42,35 24,46 6,35 6,13" fill="#C4944A" stroke="#8B6914" stroke-width="1.2"/>
+  <polygon points="24,5 39,14.5 39,33.5 24,43 9,33.5 9,14.5" fill="#D4A45A" stroke="#8B6914" stroke-width="0.7"/>
+  <polygon points="18,14 22,12 26,14 26,18 22,20 18,18" fill="#E8C870" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="26,14 30,12 34,14 34,18 30,20 26,18" fill="#D4B460" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="14,18 18,16 22,18 22,22 18,24 14,22" fill="#D4B460" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="22,18 26,16 30,18 30,22 26,24 22,22" fill="#FFD060" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="30,18 34,16 38,18 38,22 34,24 30,22" fill="#E8C870" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="18,24 22,22 26,24 26,28 22,30 18,28" fill="#E8C870" stroke="#8B6914" stroke-width="0.5"/>
+  <polygon points="26,24 30,22 34,24 34,28 30,30 26,28" fill="#D4B460" stroke="#8B6914" stroke-width="0.5"/>
+  <ellipse cx="24" cy="16" rx="2" ry="1.5" fill="#FFE080" opacity="0.9"/>
+  <ellipse cx="26" cy="20" rx="2.5" ry="2" fill="#FFD700" opacity="0.85"/>
+  <ellipse cx="22" cy="26" rx="2" ry="1.5" fill="#FFE080" opacity="0.9"/>
+  <path d="M18 8 L21 4 L24 7 L27 4 L30 8" stroke="#FFD700" stroke-width="1.5" fill="#FFE44D" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12" cy="24" r="1" fill="#FFF8DC" opacity="0.8"/>
+  <circle cx="36" cy="24" r="1" fill="#FFF8DC" opacity="0.8"/>
+  <circle cx="24" cy="38" r="1" fill="#FFF8DC" opacity="0.8"/>
+</svg>

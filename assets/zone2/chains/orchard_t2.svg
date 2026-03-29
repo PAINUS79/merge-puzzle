@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Young Sapling - Tier 2 Orchard -->
+  <!-- Soil -->
+  <ellipse cx="24" cy="43" rx="12" ry="4" fill="#8B6914"/>
+  <ellipse cx="24" cy="42" rx="10" ry="2.5" fill="#A0785A"/>
+  <!-- Thin trunk -->
+  <rect x="22" y="26" width="4" height="18" rx="2" fill="#8B6914"/>
+  <rect x="23" y="26" width="2" height="18" rx="1" fill="#A0785A" opacity="0.5"/>
+  <!-- Small branch left -->
+  <path d="M23 34 Q18 30 15 27" stroke="#8B6914" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Small branch right -->
+  <path d="M25 32 Q30 28 33 26" stroke="#8B6914" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Leaf cluster on left branch -->
+  <ellipse cx="14" cy="26" rx="4" ry="3" fill="#7EC876" transform="rotate(-15 14 26)"/>
+  <ellipse cx="16" cy="24" rx="3" ry="2" fill="#8FD886" opacity="0.8" transform="rotate(-15 16 24)"/>
+  <!-- Leaf cluster on right branch -->
+  <ellipse cx="34" cy="25" rx="4" ry="3" fill="#7EC876" transform="rotate(15 34 25)"/>
+  <ellipse cx="32" cy="23" rx="3" ry="2" fill="#8FD886" opacity="0.8" transform="rotate(10 32 23)"/>
+  <!-- Top leaves -->
+  <ellipse cx="24" cy="21" rx="5" ry="4" fill="#6AC86A"/>
+  <ellipse cx="24" cy="19" rx="3.5" ry="2.5" fill="#7EC876" opacity="0.8"/>
+  <!-- Leaf veins -->
+  <path d="M24 23 Q24 19 24 17" stroke="#5AB85A" stroke-width="0.8" fill="none"/>
+  <!-- Tiny white blossom bud -->
+  <circle cx="13" cy="23" r="1.5" fill="#FFF9F0"/>
+  <circle cx="35" cy="22" r="1.5" fill="#FFF9F0"/>
+</svg>
