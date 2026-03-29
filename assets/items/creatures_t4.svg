@@ -1,4 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <polygon points="24,4 40,22 24,40 8,22" fill="#DC143C"/>
-  <text x="24" y="47" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">Rooster</text>
+  <!-- Rooster - Tier 4 Creatures -->
+  <!-- Tail feathers (colorful) -->
+  <path d="M6 18 Q4 12 8 8 Q10 14 12 20" fill="#1E88E5"/>
+  <path d="M8 20 Q4 14 6 10 Q10 16 14 22" fill="#43A047"/>
+  <path d="M10 22 Q6 16 10 12 Q12 18 16 24" fill="#7B1FA2"/>
+  <path d="M4 22 Q2 16 6 12 Q8 18 10 24" fill="#E85050"/>
+  <!-- Body -->
+  <ellipse cx="22" cy="30" rx="12" ry="10" fill="#C4944A"/>
+  <ellipse cx="22" cy="29" rx="11" ry="9" fill="#E0B870"/>
+  <!-- Wing -->
+  <ellipse cx="20" cy="30" rx="7" ry="6" fill="#C4944A" stroke="#A0785A" stroke-width="0.5"/>
+  <path d="M16 28 Q14 32 18 34 Q16 30 18 28" fill="#A0785A" opacity="0.5"/>
+  <!-- Breast feathers -->
+  <ellipse cx="28" cy="28" rx="5" ry="6" fill="#D4A45A"/>
+  <!-- Head -->
+  <circle cx="34" cy="14" r="6" fill="#E0B870"/>
+  <circle cx="34" cy="13" r="5.5" fill="#F0C880"/>
+  <!-- Large comb -->
+  <path d="M30 8 Q32 3 34 8 Q36 3 38 8 Q40 3 42 8 L40 10 L30 10 Z" fill="#E85050" stroke="#CC3030" stroke-width="0.5"/>
+  <!-- Eye -->
+  <circle cx="36" cy="12" r="2" fill="#333"/>
+  <circle cx="36.5" cy="11.5" r="0.7" fill="#FFF"/>
+  <!-- Beak -->
+  <polygon points="39,14 46,15 39,17" fill="#FF8C00"/>
+  <!-- Wattle -->
+  <ellipse cx="38" cy="18" rx="2.5" ry="3" fill="#E85050"/>
+  <ellipse cx="38" cy="18" rx="1.5" ry="2" fill="#F06868"/>
+  <!-- Neck -->
+  <path d="M28 22 Q32 16 34 20" fill="#E0B870"/>
+  <!-- Legs with spurs -->
+  <line x1="18" y1="39" x2="16" y2="45" stroke="#FF8C00" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="26" y1="39" x2="28" y2="45" stroke="#FF8C00" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M14 45 L16 45 L18 45" stroke="#FF8C00" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M26 45 L28 45 L30 45" stroke="#FF8C00" stroke-width="1.2" stroke-linecap="round"/>
 </svg>

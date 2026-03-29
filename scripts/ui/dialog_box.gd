@@ -2,7 +2,7 @@ extends PanelContainer
 
 signal dialog_finished()
 
-@onready var portrait: TextureRect = $HBox/Portrait
+@onready var portrait: TextureRect = $HBox/PortraitBg/Portrait
 @onready var name_label: Label = $HBox/VBox/NameLabel
 @onready var text_label: RichTextLabel = $HBox/VBox/TextLabel
 @onready var next_button: Button = $HBox/VBox/NextButton

@@ -45,21 +45,41 @@ func _init_grid() -> void:
 func _draw_grid_background() -> void:
 	for child in _grid_background.get_children():
 		child.queue_free()
+	# Draw a board background panel behind all cells
+	var board_bg := Panel.new()
+	var board_style := StyleBoxFlat.new()
+	board_style.bg_color = Color(0.35, 0.5, 0.3, 0.4)
+	board_style.corner_radius_top_left = 10
+	board_style.corner_radius_top_right = 10
+	board_style.corner_radius_bottom_left = 10
+	board_style.corner_radius_bottom_right = 10
+	board_bg.add_theme_stylebox_override("panel", board_style)
+	board_bg.position = Vector2(MARGIN_X - 6, MARGIN_Y - 6)
+	board_bg.size = Vector2(COLS * (CELL_SIZE + GUTTER) - GUTTER + 12, ROWS * (CELL_SIZE + GUTTER) - GUTTER + 12)
+	_grid_background.add_child(board_bg)
+
 	for col in range(COLS):
 		for row in range(ROWS):
-			var cell := ColorRect.new()
+			var cell := Panel.new()
+			var style := StyleBoxFlat.new()
+			# Alternate slightly for checkerboard feel
+			if (col + row) % 2 == 0:
+				style.bg_color = Color(0.94, 0.91, 0.84, 1.0)
+			else:
+				style.bg_color = Color(0.91, 0.88, 0.81, 1.0)
+			style.corner_radius_top_left = 4
+			style.corner_radius_top_right = 4
+			style.corner_radius_bottom_left = 4
+			style.corner_radius_bottom_right = 4
+			style.border_width_left = 1
+			style.border_width_top = 1
+			style.border_width_right = 1
+			style.border_width_bottom = 1
+			style.border_color = Color(0.82, 0.78, 0.7, 0.6)
+			cell.add_theme_stylebox_override("panel", style)
 			cell.size = Vector2(CELL_SIZE, CELL_SIZE)
 			cell.position = _grid_to_world(col, row)
-			cell.color = Color(0.96, 0.93, 0.87, 1.0)  # Light beige
 			_grid_background.add_child(cell)
-			# Cell border
-			var border := ReferenceRect.new()
-			border.size = Vector2(CELL_SIZE, CELL_SIZE)
-			border.position = _grid_to_world(col, row)
-			border.border_color = Color(0.85, 0.82, 0.75, 1.0)
-			border.border_width = 1.0
-			border.editor_only = false
-			_grid_background.add_child(border)
 
 func _grid_to_world(col: int, row: int) -> Vector2:
 	var x: float = MARGIN_X + col * (CELL_SIZE + GUTTER)
@@ -178,6 +198,7 @@ func _perform_merge(source: MergeItem, target: MergeItem, to_col: int, to_row: i
 	# Create new merged item
 	var new_item := _create_item(chain, new_tier, to_col, to_row)
 	new_item.play_spawn_animation()
+	SfxManager.play_merge()
 	_last_merge_data = {"chain_type": chain, "tier": new_tier}
 	merge_performed.emit(chain, new_tier)
 	# Check if this item can be delivered to a task
@@ -198,6 +219,7 @@ func _move_item(item: MergeItem, to_col: int, to_row: int) -> void:
 func _sell_item_action(item: MergeItem) -> void:
 	var value: int = item.get_sell_value()
 	Economy.add_coins(value)
+	SfxManager.play_sell()
 	grid[item.grid_col][item.grid_row] = null
 	item_sold.emit(item.chain_type, item.tier, value)
 	item.play_merge_animation()  # Reuse disappear animation
@@ -222,6 +244,7 @@ func spawn_item(chain_type: int, tier: int) -> MergeItem:
 	var cell: Vector2i = empty_cells[randi() % empty_cells.size()]
 	var item := _create_item(chain_type, tier, cell.x, cell.y)
 	item.play_spawn_animation()
+	SfxManager.play_spawn()
 	_auto_save()
 	return item
 

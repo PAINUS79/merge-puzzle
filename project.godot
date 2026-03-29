@@ -23,6 +23,7 @@ EnergyManager="*res://scripts/game/energy_manager.gd"
 Economy="*res://scripts/game/economy.gd"
 TaskManager="*res://scripts/game/task_manager.gd"
 SaveManager="*res://scripts/game/save_manager.gd"
+SfxManager="*res://scripts/game/sfx_manager.gd"
 
 [display]
 

@@ -1,4 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <circle cx="24" cy="22" r="16" fill="#90EE90"/>
-  <text x="24" y="44" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">Seed</text>
+  <!-- Seed - Tier 1 Crops -->
+  <!-- Soil mound -->
+  <ellipse cx="24" cy="38" rx="14" ry="5" fill="#8B6914"/>
+  <ellipse cx="24" cy="37" rx="13" ry="4" fill="#A0785A"/>
+  <!-- Seed body -->
+  <ellipse cx="24" cy="28" rx="6" ry="8" fill="#C4944A" transform="rotate(-10 24 28)"/>
+  <ellipse cx="24" cy="28" rx="5" ry="7" fill="#D4A45A" transform="rotate(-10 24 28)"/>
+  <!-- Seed line detail -->
+  <path d="M24 21 Q23 28 24 35" stroke="#A0785A" stroke-width="0.8" fill="none"/>
+  <!-- Tiny sprout -->
+  <path d="M24 22 Q22 17 20 14" stroke="#7EC876" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="19" cy="14" rx="3" ry="2" fill="#7EC876" transform="rotate(-20 19 14)"/>
+  <!-- Highlight -->
+  <ellipse cx="22" cy="25" rx="2" ry="3" fill="#E8C87A" opacity="0.4" transform="rotate(-10 22 25)"/>
 </svg>

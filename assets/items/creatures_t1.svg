@@ -1,4 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <polygon points="24,4 40,22 24,40 8,22" fill="#FFFDD0"/>
-  <text x="24" y="47" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">Egg</text>
+  <!-- Egg - Tier 1 Creatures -->
+  <!-- Shadow -->
+  <ellipse cx="24" cy="42" rx="10" ry="3" fill="#DDD" opacity="0.4"/>
+  <!-- Egg body -->
+  <ellipse cx="24" cy="26" rx="12" ry="16" fill="#FFF5E6" stroke="#E8D5B8" stroke-width="1"/>
+  <!-- Warm spots -->
+  <ellipse cx="20" cy="20" rx="3" ry="4" fill="#FFE8CC" opacity="0.6" transform="rotate(-15 20 20)"/>
+  <ellipse cx="30" cy="30" rx="2" ry="3" fill="#FFE0B8" opacity="0.5" transform="rotate(10 30 30)"/>
+  <!-- Specks -->
+  <circle cx="18" cy="24" r="1" fill="#E8D5B8" opacity="0.5"/>
+  <circle cx="28" cy="18" r="0.8" fill="#E8D5B8" opacity="0.5"/>
+  <circle cx="26" cy="32" r="1.2" fill="#E8D5B8" opacity="0.4"/>
+  <circle cx="20" cy="34" r="0.7" fill="#E8D5B8" opacity="0.5"/>
+  <!-- Highlight -->
+  <ellipse cx="19" cy="18" rx="3" ry="5" fill="#FFFFFF" opacity="0.4" transform="rotate(-20 19 18)"/>
 </svg>

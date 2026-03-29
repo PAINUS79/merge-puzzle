@@ -45,11 +45,11 @@ func _setup_pouches() -> void:
 		pouch.pouch_tapped.connect(_on_pouch_tapped)
 		_pouches.append(pouch)
 		# Update button text with chain name
-		var btn: Button = pouch.get_node("TapButton")
+		var btn: Button = pouch.get_node("VBox/TapButton")
 		match chain_type:
-			ItemData.ChainType.CROPS: btn.text = "🌾"
-			ItemData.ChainType.TOOLS: btn.text = "🔨"
-			ItemData.ChainType.CREATURES: btn.text = "🥚"
+			ItemData.ChainType.CROPS: btn.text = "Crops"
+			ItemData.ChainType.TOOLS: btn.text = "Tools"
+			ItemData.ChainType.CREATURES: btn.text = "Eggs"
 
 func _connect_signals() -> void:
 	game_board.merge_performed.connect(_on_merge_performed)
@@ -124,6 +124,7 @@ func _on_pouch_tapped(chain_type: int) -> void:
 		return
 	var item := game_board.spawn_item(chain_type, 0)
 	if item:
+		SfxManager.play_tap()
 		tutorial.on_pouch_tapped()
 		_save_game()
 
@@ -138,10 +139,10 @@ func _on_item_sold(_chain_type: int, _tier: int, _value: int) -> void:
 	_save_game()
 
 func _on_board_full() -> void:
-	# Could show a notification
-	pass
+	SfxManager.play_error()
 
 func _on_task_completed(task_index: int) -> void:
+	SfxManager.play_task_complete()
 	tutorial.on_task_completed(task_index)
 	# Show appropriate story beat
 	if task_index == 0 and not story_flags.get("garden_restored_shown", false):

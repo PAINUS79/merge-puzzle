@@ -1,5 +1,5 @@
 class_name SeedPouch
-extends Control
+extends PanelContainer
 
 signal pouch_tapped(chain_type: int)
 
@@ -10,10 +10,10 @@ var cooldown_timer: float = 0.0
 var is_on_cooldown: bool = false
 var _recharge_timer: float = 0.0
 
-@onready var icon: TextureRect = $Icon
-@onready var charge_label: Label = $ChargeLabel
-@onready var cooldown_bar: ProgressBar = $CooldownBar
-@onready var tap_button: Button = $TapButton
+@onready var icon: TextureRect = $VBox/Icon
+@onready var charge_label: Label = $VBox/ChargeLabel
+@onready var cooldown_bar: ProgressBar = $VBox/CooldownBar
+@onready var tap_button: Button = $VBox/TapButton
 
 func _ready() -> void:
 	_update_display()

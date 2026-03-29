@@ -20,6 +20,7 @@ func _process(delta: float) -> void:
 		if _recharge_timer >= RECHARGE_TIME:
 			_recharge_timer -= RECHARGE_TIME
 			add_energy(1)
+			SfxManager.play_energy_refill()
 			energy_recharged.emit()
 
 func use_energy(amount: int = 1) -> bool:

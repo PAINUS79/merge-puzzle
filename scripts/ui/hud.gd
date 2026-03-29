@@ -1,13 +1,13 @@
 extends Control
 
-@onready var energy_bar: ProgressBar = $TopBar/EnergyBar
-@onready var energy_label: Label = $TopBar/EnergyLabel
-@onready var coin_label: Label = $TopBar/CoinLabel
-@onready var gem_label: Label = $TopBar/GemLabel
-@onready var task_panel: VBoxContainer = $TaskPanel
-@onready var task_name_label: Label = $TaskPanel/TaskName
-@onready var task_desc_label: Label = $TaskPanel/TaskDesc
-@onready var task_progress_label: Label = $TaskPanel/TaskProgress
+@onready var energy_bar: ProgressBar = $TopBar/HBox/EnergyBar
+@onready var energy_label: Label = $TopBar/HBox/EnergyLabel
+@onready var coin_label: Label = $TopBar/HBox/CoinLabel
+@onready var gem_label: Label = $TopBar/HBox/GemLabel
+@onready var task_panel: PanelContainer = $TaskPanel
+@onready var task_name_label: Label = $TaskPanel/TaskVBox/TaskName
+@onready var task_desc_label: Label = $TaskPanel/TaskVBox/TaskDesc
+@onready var task_progress_label: Label = $TaskPanel/TaskVBox/TaskProgress
 
 func _ready() -> void:
 	EnergyManager.energy_changed.connect(_on_energy_changed)
