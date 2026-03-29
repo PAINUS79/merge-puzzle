@@ -185,6 +185,10 @@ func _perform_merge(source: MergeItem, target: MergeItem, to_col: int, to_row: i
 		source.end_drag()
 		source.snap_back()
 		return
+	if source.tier >= ItemData.MAX_TIER:
+		source.end_drag()
+		source.snap_back()
+		return
 	var new_tier: int = source.tier + 1
 	var chain: int = source.chain_type
 	# Remove source from grid

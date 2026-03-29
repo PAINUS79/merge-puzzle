@@ -49,7 +49,7 @@ func get_time_to_next() -> float:
 func save_data() -> Dictionary:
 	return {
 		"current_energy": current_energy,
-		"last_energy_time": Time.get_unix_time_from_system(),
+		"last_energy_time": _last_energy_time,
 		"recharge_timer": _recharge_timer,
 	}
 
