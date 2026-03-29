@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=5 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/game/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/game/game_board.gd" id="2_board"]
+[ext_resource type="PackedScene" uid="uid://hud_scene" path="res://scenes/ui/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://dialog_box" path="res://scenes/ui/dialog_box.tscn" id="4_dialog"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -8,7 +11,309 @@ script = ExtResource("1_main")
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
+[node name="GameBoard" type="Node2D" parent="."]
+script = ExtResource("2_board")
+
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 10
 
-[node name="GameBoard" type="Node2D" parent="."]
+[node name="HUD" parent="UI" instance=ExtResource("3_hud")]
+
+[node name="DialogBox" parent="UI" instance=ExtResource("4_dialog")]
+
+[node name="FarmMap" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FarmBg" type="ColorRect" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6, 0.75, 0.55, 1)
+
+[node name="FarmTitle" type="Label" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 40.0
+offset_right = 100.0
+offset_bottom = 70.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "Merge Grove Farm"
+horizontal_alignment = 1
+
+[node name="ZoneBefore" type="ColorRect" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 120.0
+offset_right = 150.0
+offset_bottom = 420.0
+grow_horizontal = 2
+color = Color(0.55, 0.45, 0.35, 1)
+
+[node name="ZoneBeforeLabel" type="Label" parent="UI/FarmMap/ZoneBefore"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Overgrown Garden"
+horizontal_alignment = 1
+
+[node name="ZoneAfter" type="ColorRect" parent="UI/FarmMap"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 120.0
+offset_right = 150.0
+offset_bottom = 420.0
+grow_horizontal = 2
+color = Color(0.3, 0.7, 0.3, 1)
+
+[node name="ZoneAfterLabel" type="Label" parent="UI/FarmMap/ZoneAfter"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Restored Garden ✨"
+horizontal_alignment = 1
+
+[node name="ZoneLabel" type="Label" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 440.0
+offset_right = 150.0
+offset_bottom = 470.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+text = "Zone 1: The Overgrown Garden"
+horizontal_alignment = 1
+
+[node name="ProgressLabel" type="Label" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 475.0
+offset_right = 100.0
+offset_bottom = 500.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "0/3 tasks complete"
+horizontal_alignment = 1
+
+[node name="ZoneButton" type="Button" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 520.0
+offset_right = 80.0
+offset_bottom = 560.0
+grow_horizontal = 2
+text = "Enter Zone 1"
+
+[node name="BackButton" type="Button" parent="UI/FarmMap"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 580.0
+offset_right = 80.0
+offset_bottom = 610.0
+grow_horizontal = 2
+text = "Back to Board"
+
+[node name="PouchContainer" type="HBoxContainer" parent="UI"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -80.0
+offset_right = -20.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="TutorialLabel" type="Label" parent="UI"]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 570.0
+offset_right = 180.0
+offset_bottom = 600.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.2, 0.5, 0.2, 1)
+text = "Tap a Seed Pouch to spawn an item!"
+horizontal_alignment = 1
+
+[node name="MapButton" type="Button" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -60.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 36.0
+grow_horizontal = 0
+text = "Map"
+
+[node name="MenuScreen" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBg" type="ColorRect" parent="UI/MenuScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.55, 0.72, 0.45, 1)
+
+[node name="TitleLabel" type="Label" parent="UI/MenuScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 200.0
+offset_right = 150.0
+offset_bottom = 260.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 28
+text = "Merge Grove"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="UI/MenuScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 270.0
+offset_right = 150.0
+offset_bottom = 300.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+text = "A cozy merge puzzle adventure"
+horizontal_alignment = 1
+
+[node name="PlayButton" type="Button" parent="UI/MenuScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 380.0
+offset_right = 80.0
+offset_bottom = 430.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "Play"
+
+[node name="ZoneCompleteScreen" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CompleteBg" type="ColorRect" parent="UI/ZoneCompleteScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.3, 1)
+
+[node name="CompleteTitle" type="Label" parent="UI/ZoneCompleteScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 250.0
+offset_right = 150.0
+offset_bottom = 300.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Chapter 1 Complete!"
+horizontal_alignment = 1
+
+[node name="CompleteDesc" type="Label" parent="UI/ZoneCompleteScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 320.0
+offset_right = 150.0
+offset_bottom = 380.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+text = "The Overgrown Garden has been restored!
+Coming Soon: Zone 2..."
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="UI/ZoneCompleteScreen"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 440.0
+offset_right = 80.0
+offset_bottom = 480.0
+grow_horizontal = 2
+text = "Continue"

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 400" width="390" height="400">
+  <!-- Sky -->
+  <rect width="390" height="160" fill="#87CEEB"/>
+  <!-- Sun -->
+  <circle cx="340" cy="50" r="30" fill="#FFD700"/>
+  <!-- Ground -->
+  <rect y="160" width="390" height="240" fill="#7CCD7C"/>
+  <!-- Garden beds -->
+  <rect x="20" y="180" width="80" height="50" rx="6" fill="#5B8C2A"/>
+  <rect x="120" y="180" width="80" height="50" rx="6" fill="#6B9E3A"/>
+  <rect x="220" y="180" width="80" height="50" rx="6" fill="#5B8C2A"/>
+  <!-- Flowers -->
+  <circle cx="40" cy="270" r="8" fill="#FF69B4"/>
+  <circle cx="80" cy="280" r="8" fill="#FF6347"/>
+  <circle cx="140" cy="265" r="8" fill="#FFD700"/>
+  <circle cx="200" cy="275" r="8" fill="#FF69B4"/>
+  <circle cx="260" cy="268" r="8" fill="#DDA0DD"/>
+  <circle cx="320" cy="278" r="8" fill="#FF6347"/>
+  <!-- Trees -->
+  <rect x="50" y="300" width="12" height="40" fill="#8B6914"/>
+  <circle cx="56" cy="290" r="22" fill="#228B22"/>
+  <rect x="300" y="310" width="12" height="35" fill="#8B6914"/>
+  <circle cx="306" cy="300" r="20" fill="#2E8B57"/>
+  <!-- Fence -->
+  <rect x="10" y="350" width="370" height="4" fill="#A0522D"/>
+  <rect x="30" y="340" width="6" height="20" fill="#A0522D"/>
+  <rect x="120" y="340" width="6" height="20" fill="#A0522D"/>
+  <rect x="210" y="340" width="6" height="20" fill="#A0522D"/>
+  <rect x="300" y="340" width="6" height="20" fill="#A0522D"/>
+  <!-- Label -->
+  <text x="195" y="390" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2E5E1A">Zone 1 - Restored</text>
+</svg>

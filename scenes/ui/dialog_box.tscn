@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://dialog_box"]
+
+[ext_resource type="Script" path="res://scripts/ui/dialog_box.gd" id="1_dialog"]
+
+[node name="DialogBox" type="PanelContainer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -180.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_dialog")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Portrait" type="TextureRect" parent="HBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(80, 80)
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Speaker"
+
+[node name="TextLabel" type="RichTextLabel" parent="HBox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 80)
+bbcode_enabled = true
+text = "Dialog text goes here..."
+fit_content = true
+scroll_active = false
+
+[node name="NextButton" type="Button" parent="HBox/VBox"]
+layout_mode = 2
+text = "Next"

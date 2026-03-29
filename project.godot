@@ -18,6 +18,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+ItemData="*res://scripts/game/item_data.gd"
+EnergyManager="*res://scripts/game/energy_manager.gd"
+Economy="*res://scripts/game/economy.gd"
+TaskManager="*res://scripts/game/task_manager.gd"
+SaveManager="*res://scripts/game/save_manager.gd"
+
 [display]
 
 window/size/viewport_width=390

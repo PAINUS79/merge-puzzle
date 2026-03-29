@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="8" fill="#FFF0DB"/>
+  <!-- Head -->
+  <circle cx="64" cy="42" r="24" fill="#D4956A"/>
+  <!-- Body/bust -->
+  <ellipse cx="64" cy="95" rx="34" ry="30" fill="#C07A50"/>
+  <!-- Label -->
+  <text x="64" y="122" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="#5C3A1E">Hazel</text>
+</svg>
