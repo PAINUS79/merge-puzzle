@@ -59,10 +59,44 @@ jobs:
   # ──────────────────────────────────────────────────────────────
   # Job 2: iOS build (macOS runner required for Xcode)
   # ──────────────────────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────────────
+  # Job 2 (pre-flight gate): Detect whether signing secrets exist.
+  # The iOS build is expensive (~25-40 min on macos-14). Skip when
+  # the board has not yet provided credentials so PRs still pass CI.
+  # ──────────────────────────────────────────────────────────────
+  check-signing-secrets:
+    name: Check signing secrets available
+    runs-on: ubuntu-latest
+    needs: validate
+    outputs:
+      has_secrets: ${{ steps.detect.outputs.has_secrets }}
+    steps:
+      - name: Detect secrets
+        id: detect
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          MATCH_URL:  ${{ secrets.MATCH_GIT_URL }}
+        run: |
+          if [ -n "$ASC_KEY_ID" ] && [ -n "$MATCH_URL" ]; then
+            echo "has_secrets=true"  >> "$GITHUB_OUTPUT"
+            echo "Signing secrets detected — iOS export will run."
+          else
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "Signing secrets not configured — skipping iOS export."
+            echo "See docs/ios-preflight-checklist.md to add credentials."
+          fi
+
+  # ──────────────────────────────────────────────────────────────
+  # Job 3: iOS build (macOS runner required for Xcode)
+  # Only runs when signing secrets are present (gated by Job 2).
+  # To enable: add secrets in docs/ios-preflight-checklist.md to
+  # Settings -> Secrets and variables -> Actions.
+  # ──────────────────────────────────────────────────────────────
   ios-export:
     name: Build & Export iOS
     runs-on: macos-14          # Apple Silicon; use macos-13 for Intel x86_64
-    needs: validate
+    needs: check-signing-secrets
+    if: needs.check-signing-secrets.outputs.has_secrets == 'true'
     timeout-minutes: 60
     environment:
       name: ${{ github.event.inputs.environment || 'staging' }}
