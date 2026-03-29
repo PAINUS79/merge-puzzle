@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+IAPManager="*res://scripts/game/iap_manager.gd"
+
 [display]
 
 window/size/viewport_width=390
