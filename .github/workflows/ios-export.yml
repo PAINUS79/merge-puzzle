@@ -56,6 +56,13 @@ jobs:
           "$GODOT_BIN" --headless --path "$PROJECT_PATH" --editor --quit --quit-after 100 || true
           echo "Project validation complete."
 
+      - name: Run GUT tests
+        run: |
+          "$GODOT_BIN" --headless --path "$PROJECT_PATH" \
+            -s addons/gut/gut_cmdln.gd \
+            -gdir=res://tests/ -gprefix=test_ -gsuffix=.gd \
+            -ginclude_subdirs -gexit
+
   # ──────────────────────────────────────────────────────────────
   # Job 2: iOS build (macOS runner required for Xcode)
   # ──────────────────────────────────────────────────────────────

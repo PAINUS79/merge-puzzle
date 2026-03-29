@@ -203,6 +203,9 @@ func _sell_item_action(item: MergeItem) -> void:
 	item.play_merge_animation()  # Reuse disappear animation
 	_auto_save()
 
+func _is_valid_cell(col: int, row: int) -> bool:
+	return col >= 0 and col < COLS and row >= 0 and row < ROWS
+
 func _create_item(chain_type: int, tier: int, col: int, row: int) -> MergeItem:
 	var item := MergeItem.new()
 	_item_layer.add_child(item)
@@ -223,6 +226,8 @@ func spawn_item(chain_type: int, tier: int) -> MergeItem:
 	return item
 
 func spawn_item_at(chain_type: int, tier: int, col: int, row: int) -> MergeItem:
+	if not _is_valid_cell(col, row):
+		return null
 	if grid[col][row] != null:
 		return null
 	var item := _create_item(chain_type, tier, col, row)
@@ -251,11 +256,21 @@ func is_board_full() -> bool:
 	return _get_empty_cells().is_empty()
 
 func _update_highlights() -> void:
-	# Could add visual highlight for valid merge targets
-	pass
+	_clear_highlights()
+	if _dragged_item == null:
+		return
+	for col in range(COLS):
+		for row in range(ROWS):
+			var item: MergeItem = grid[col][row]
+			if item != null and item != _dragged_item and _dragged_item.can_merge_with(item):
+				item.modulate = Color(0.6, 1.0, 0.6, 1.0)  # Green tint for valid merge targets
+				_highlight_cells.append(item)
 
 func _clear_highlights() -> void:
-	pass
+	for item in _highlight_cells:
+		if is_instance_valid(item):
+			item.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	_highlight_cells.clear()
 
 func _auto_save() -> void:
 	SaveManager.save_game(get_grid_save_data(), {})

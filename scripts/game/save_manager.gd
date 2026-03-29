@@ -28,6 +28,10 @@ func load_game() -> Dictionary:
 	var json := JSON.new()
 	var err := json.parse(text)
 	if err != OK:
+		push_warning("SaveManager: Failed to parse save file (line %d): %s" % [json.get_error_line(), json.get_error_message()])
+		return {}
+	if json.data == null or not (json.data is Dictionary):
+		push_warning("SaveManager: Save file does not contain a valid dictionary")
 		return {}
 	var data: Dictionary = json.data
 	if data.has("energy"):
