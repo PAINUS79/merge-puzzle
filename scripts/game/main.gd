@@ -18,12 +18,20 @@ var tutorial: Node = null
 @onready var menu_screen: Control = $UI/MenuScreen
 @onready var zone_complete_screen: Control = $UI/ZoneCompleteScreen
 
-# Farm map sub-nodes
-@onready var zone_before: TextureRect = $UI/FarmMap/ZoneBefore
-@onready var zone_after: TextureRect = $UI/FarmMap/ZoneAfter
-@onready var zone_label: Label = $UI/FarmMap/ZoneLabel
-@onready var progress_label: Label = $UI/FarmMap/ProgressLabel
-@onready var zone_button: Button = $UI/FarmMap/ZoneButton
+# Zone selector card nodes
+@onready var zone1_card: PanelContainer = $UI/FarmMap/Zone1Card
+@onready var zone1_before: TextureRect = $UI/FarmMap/Zone1Card/VBox/Zone1Before
+@onready var zone1_after: TextureRect = $UI/FarmMap/Zone1Card/VBox/Zone1After
+@onready var zone1_label: Label = $UI/FarmMap/Zone1Card/VBox/Zone1Label
+@onready var zone1_progress: Label = $UI/FarmMap/Zone1Card/VBox/Zone1Progress
+@onready var zone1_button: Button = $UI/FarmMap/Zone1Card/VBox/Zone1Button
+@onready var zone2_card: PanelContainer = $UI/FarmMap/Zone2Card
+@onready var zone2_before: TextureRect = $UI/FarmMap/Zone2Card/VBox/Zone2Before
+@onready var zone2_after: TextureRect = $UI/FarmMap/Zone2Card/VBox/Zone2After
+@onready var zone2_label: Label = $UI/FarmMap/Zone2Card/VBox/Zone2Label
+@onready var zone2_progress: Label = $UI/FarmMap/Zone2Card/VBox/Zone2Progress
+@onready var zone2_button: Button = $UI/FarmMap/Zone2Card/VBox/Zone2Button
+@onready var zone2_lock_overlay: ColorRect = $UI/FarmMap/Zone2Card/LockOverlay
 @onready var back_button: Button = $UI/FarmMap/BackButton
 
 var _pouches: Array = []
@@ -82,7 +90,8 @@ func _connect_signals() -> void:
 	game_board.item_sold.connect(_on_item_sold)
 	game_board.board_full.connect(_on_board_full)
 	dialog_box.dialog_finished.connect(_on_dialog_finished)
-	zone_button.pressed.connect(_on_zone_selected)
+	zone1_button.pressed.connect(_on_zone1_selected)
+	zone2_button.pressed.connect(_on_zone2_selected)
 	back_button.pressed.connect(_on_back_to_grid)
 	TaskManager.task_completed.connect(_on_task_completed)
 	TaskManager.zone_completed.connect(_on_zone_completed)
@@ -236,58 +245,137 @@ func _switch_to_zone(zone: int) -> void:
 	_save_game()
 
 func _update_farm_map_display() -> void:
-	var is_restored: bool = TaskManager.zones_completed.get(current_zone, false)
-	var before_path: String = ZONE_BEFORE_TEXTURES.get(current_zone, "")
-	var after_path: String = ZONE_AFTER_TEXTURES.get(current_zone, "")
+	# --- Zone 1 card ---
+	var z1_complete: bool = TaskManager.zones_completed.get(1, false)
+	zone1_before.visible = not z1_complete
+	zone1_after.visible = z1_complete
 
-	if before_path != "":
-		var before_tex = load(before_path)
-		if before_tex:
-			zone_before.texture = before_tex
-	if after_path != "":
-		var after_tex = load(after_path)
-		if after_tex:
-			zone_after.texture = after_tex
-
-	zone_before.visible = not is_restored
-	zone_after.visible = is_restored
-
-	var zone_name: String
-	if is_restored:
-		zone_name = ZONE_NAMES_RESTORED.get(current_zone, "Zone " + str(current_zone))
+	if z1_complete:
+		zone1_label.text = "Zone 1: " + ZONE_NAMES_RESTORED.get(1, "Zone 1")
 	else:
-		zone_name = ZONE_NAMES.get(current_zone, "Zone " + str(current_zone))
-	zone_label.text = "Zone " + str(current_zone) + ": " + zone_name
+		zone1_label.text = "Zone 1: " + ZONE_NAMES.get(1, "Zone 1")
 
-	var completed: int = TaskManager.get_completed_count()
-	var total: int = TaskManager.get_total_tasks()
-	progress_label.text = str(completed) + "/" + str(total) + " tasks complete"
+	# Compute Zone 1 progress
+	var z1_completed_count: int = 0
+	var z1_total: int = TaskManager.ZONE_1_TASKS.size()
+	if current_zone == 1:
+		z1_completed_count = TaskManager.get_completed_count()
+	elif z1_complete:
+		z1_completed_count = z1_total
+	zone1_progress.text = str(z1_completed_count) + "/" + str(z1_total) + " tasks complete"
 
-	# Show zone navigation
-	if TaskManager.is_zone_unlocked(2) and current_zone == 1 and is_restored:
-		zone_button.text = "Go to Zone 2"
-	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
-		zone_button.text = "Back to Zone 1"
+	# Zone 1 button
+	if current_zone == 1:
+		zone1_button.text = "Current Zone"
+		zone1_button.disabled = true
 	else:
-		zone_button.text = "Enter Zone"
+		zone1_button.text = "Go to Zone 1"
+		zone1_button.disabled = false
+
+	# Build card styles for current/normal/locked states
+	var active_style: StyleBoxFlat = StyleBoxFlat.new()
+	active_style.bg_color = Color(0.38, 0.58, 0.35, 0.85)
+	active_style.border_width_left = 2
+	active_style.border_width_top = 2
+	active_style.border_width_right = 2
+	active_style.border_width_bottom = 2
+	active_style.border_color = Color(0.9, 0.85, 0.6, 0.8)
+	active_style.corner_radius_top_left = 12
+	active_style.corner_radius_top_right = 12
+	active_style.corner_radius_bottom_left = 12
+	active_style.corner_radius_bottom_right = 12
+	active_style.content_margin_left = 8.0
+	active_style.content_margin_top = 8.0
+	active_style.content_margin_right = 8.0
+	active_style.content_margin_bottom = 8.0
+
+	var normal_style: StyleBoxFlat = StyleBoxFlat.new()
+	normal_style.bg_color = Color(0.32, 0.48, 0.3, 0.7)
+	normal_style.corner_radius_top_left = 12
+	normal_style.corner_radius_top_right = 12
+	normal_style.corner_radius_bottom_left = 12
+	normal_style.corner_radius_bottom_right = 12
+	normal_style.content_margin_left = 8.0
+	normal_style.content_margin_top = 8.0
+	normal_style.content_margin_right = 8.0
+	normal_style.content_margin_bottom = 8.0
+
+	var locked_style: StyleBoxFlat = StyleBoxFlat.new()
+	locked_style.bg_color = Color(0.28, 0.3, 0.28, 0.6)
+	locked_style.corner_radius_top_left = 12
+	locked_style.corner_radius_top_right = 12
+	locked_style.corner_radius_bottom_left = 12
+	locked_style.corner_radius_bottom_right = 12
+	locked_style.content_margin_left = 8.0
+	locked_style.content_margin_top = 8.0
+	locked_style.content_margin_right = 8.0
+	locked_style.content_margin_bottom = 8.0
+
+	if current_zone == 1:
+		zone1_card.add_theme_stylebox_override("panel", active_style)
+	else:
+		zone1_card.add_theme_stylebox_override("panel", normal_style)
+
+	# --- Zone 2 card ---
+	var z2_unlocked: bool = TaskManager.is_zone_unlocked(2)
+	var z2_complete: bool = TaskManager.zones_completed.get(2, false)
+
+	zone2_lock_overlay.visible = not z2_unlocked
+
+	if z2_unlocked:
+		zone2_before.visible = not z2_complete
+		zone2_after.visible = z2_complete
+
+		if z2_complete:
+			zone2_label.text = "Zone 2: " + ZONE_NAMES_RESTORED.get(2, "Zone 2")
+		else:
+			zone2_label.text = "Zone 2: " + ZONE_NAMES.get(2, "Zone 2")
+
+		# Compute Zone 2 progress
+		var z2_completed_count: int = 0
+		var z2_total: int = TaskManager.ZONE_2_TASKS.size()
+		if current_zone == 2:
+			z2_completed_count = TaskManager.get_completed_count()
+		elif z2_complete:
+			z2_completed_count = z2_total
+		zone2_progress.text = str(z2_completed_count) + "/" + str(z2_total) + " tasks complete"
+
+		if current_zone == 2:
+			zone2_button.text = "Current Zone"
+			zone2_button.disabled = true
+			zone2_card.add_theme_stylebox_override("panel", active_style)
+		else:
+			zone2_button.text = "Go to Zone 2"
+			zone2_button.disabled = false
+			zone2_card.add_theme_stylebox_override("panel", normal_style)
+	else:
+		zone2_label.text = "Zone 2: ???"
+		zone2_progress.text = "Complete Zone 1 to unlock"
+		zone2_button.text = "Locked"
+		zone2_button.disabled = true
+		zone2_before.visible = true
+		zone2_after.visible = false
+		zone2_card.add_theme_stylebox_override("panel", locked_style)
 
 func _show_map() -> void:
 	_set_state(GameState.MAP)
 
-func _on_zone_selected() -> void:
-	if current_zone == 1 and TaskManager.zones_completed.get(1, false) and TaskManager.is_zone_unlocked(2):
+func _on_zone1_selected() -> void:
+	if current_zone != 1:
+		_switch_to_zone(1)
+	_set_state(GameState.PLAYING)
+
+func _on_zone2_selected() -> void:
+	if not TaskManager.is_zone_unlocked(2):
+		return
+	if current_zone != 2:
 		_switch_to_zone(2)
 		if not story_flags.get("zone2_arrival_shown", false):
 			story_flags["zone2_arrival_shown"] = true
 			dialog_box.show_story_beat("zone2_arrival")
 			story_flags["pending_zone2_start"] = true
-		else:
-			_set_state(GameState.PLAYING)
-	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
-		_switch_to_zone(1)
-		_set_state(GameState.PLAYING)
-	else:
-		_set_state(GameState.PLAYING)
+			return
+	_set_state(GameState.PLAYING)
 
 func _on_back_to_grid() -> void:
 	_set_state(GameState.PLAYING)
