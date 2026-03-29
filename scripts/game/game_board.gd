@@ -181,6 +181,10 @@ func _on_touch_end(pos: Vector2) -> void:
 	_dragged_item = null
 
 func _perform_merge(source: MergeItem, target: MergeItem, to_col: int, to_row: int) -> void:
+	if source.tier >= ItemData.MAX_TIER:
+		source.end_drag()
+		source.snap_back()
+		return
 	if not EnergyManager.use_energy(1):
 		source.end_drag()
 		source.snap_back()
