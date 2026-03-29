@@ -5,63 +5,88 @@ signal task_completed(task_index: int)
 signal zone_completed()
 signal item_delivered(task_index: int, chain_type: int, tier: int)
 
+# Zone 1 tasks: single-requirement per task (backward compatible)
 const ZONE_1_TASKS: Array = [
 	{
 		"name": "Clear the weeds",
 		"description": "Deliver 2x Garden Fence",
-		"required_chain": 1,  # TOOLS
-		"required_tier": 4,   # Garden Fence (0-indexed)
-		"required_count": 2,
+		"requirements": [
+			{ "chain": 1, "tier": 4, "count": 2 },  # TOOLS
+		],
 		"coin_reward": 100,
 		"gem_reward": 5,
 	},
 	{
 		"name": "Plant the first crop",
 		"description": "Deliver 2x Golden Harvest",
-		"required_chain": 0,  # CROPS
-		"required_tier": 4,   # Golden Harvest
-		"required_count": 2,
+		"requirements": [
+			{ "chain": 0, "tier": 4, "count": 2 },  # CROPS
+		],
 		"coin_reward": 150,
 		"gem_reward": 8,
 	},
 	{
 		"name": "Welcome a friend",
 		"description": "Deliver 1x Phoenix Chicken",
-		"required_chain": 2,  # CREATURES
-		"required_tier": 4,   # Phoenix Chicken
-		"required_count": 1,
+		"requirements": [
+			{ "chain": 2, "tier": 4, "count": 1 },  # CREATURES
+		],
 		"coin_reward": 200,
 		"gem_reward": 10,
 	},
 ]
 
+# Zone 2 tasks: multi-requirement per task (cross-chain deliveries)
 const ZONE_2_TASKS: Array = [
 	{
-		"name": "Plant the orchard",
-		"description": "Deliver 2x Golden Apple Tree",
-		"required_chain": 3,  # ORCHARD
-		"required_tier": 4,   # Golden Apple Tree
-		"required_count": 2,
-		"coin_reward": 250,
+		"name": "Light the Path",
+		"description": "Deliver 2x Glowcap",
+		"requirements": [
+			{ "chain": 3, "tier": 4, "count": 2 },  # MUSHROOMS max
+		],
+		"coin_reward": 120,
+		"gem_reward": 6,
+	},
+	{
+		"name": "Craft a Lantern",
+		"description": "Deliver 1x Star Crystal + 1x Garden Fence",
+		"requirements": [
+			{ "chain": 4, "tier": 4, "count": 1 },  # CRYSTALS max
+			{ "chain": 1, "tier": 4, "count": 1 },  # TOOLS max
+		],
+		"coin_reward": 160,
+		"gem_reward": 8,
+	},
+	{
+		"name": "Feed the Fox",
+		"description": "Deliver 3x Shiitake Cluster + 1x Golden Harvest",
+		"requirements": [
+			{ "chain": 3, "tier": 3, "count": 3 },  # MUSHROOMS tier 4
+			{ "chain": 0, "tier": 4, "count": 1 },  # CROPS max
+		],
+		"coin_reward": 180,
+		"gem_reward": 10,
+	},
+	{
+		"name": "Restore the Shrine",
+		"description": "Deliver 2x Star Crystal + 2x Glowcap",
+		"requirements": [
+			{ "chain": 4, "tier": 4, "count": 2 },  # CRYSTALS max
+			{ "chain": 3, "tier": 4, "count": 2 },  # MUSHROOMS max
+		],
+		"coin_reward": 220,
 		"gem_reward": 12,
 	},
 	{
-		"name": "Sweeten the grove",
-		"description": "Deliver 2x Ambrosia Jar",
-		"required_chain": 4,  # HONEY
-		"required_tier": 4,   # Ambrosia Jar
-		"required_count": 2,
+		"name": "Awaken the Grove",
+		"description": "Deliver 1x Phoenix Chicken + 1x Star Crystal + 1x Glowcap",
+		"requirements": [
+			{ "chain": 2, "tier": 4, "count": 1 },  # CREATURES max
+			{ "chain": 4, "tier": 4, "count": 1 },  # CRYSTALS max
+			{ "chain": 3, "tier": 4, "count": 1 },  # MUSHROOMS max
+		],
 		"coin_reward": 300,
 		"gem_reward": 15,
-	},
-	{
-		"name": "Hatch the guardian",
-		"description": "Deliver 2x Phoenix Chicken",
-		"required_chain": 2,  # CREATURES
-		"required_tier": 4,   # Phoenix Chicken
-		"required_count": 2,
-		"coin_reward": 400,
-		"gem_reward": 20,
 	},
 ]
 
@@ -71,7 +96,8 @@ const ALL_ZONE_TASKS: Dictionary = {
 }
 
 var current_zone: int = 1
-var task_progress: Array = []  # Array of ints: delivered count per task
+# requirement_progress is a 2D structure: [task_index][req_index] = delivered count
+var requirement_progress: Array = []
 var tasks_completed: Array = []  # Array of bools
 var current_task_index: int = 0
 var zone_complete: bool = false
@@ -82,10 +108,13 @@ func _ready() -> void:
 
 func reset_tasks() -> void:
 	var tasks: Array = _get_zone_tasks()
-	task_progress = []
+	requirement_progress = []
 	tasks_completed = []
 	for i in range(tasks.size()):
-		task_progress.append(0)
+		var req_counts: Array = []
+		for j in range(tasks[i]["requirements"].size()):
+			req_counts.append(0)
+		requirement_progress.append(req_counts)
 		tasks_completed.append(false)
 	current_task_index = 0
 	zone_complete = false
@@ -105,9 +134,18 @@ func get_current_task() -> Dictionary:
 		return tasks[current_task_index]
 	return {}
 
-func get_task_progress(index: int) -> int:
-	if index < task_progress.size():
-		return task_progress[index]
+func get_task_progress(task_index: int) -> int:
+	# Returns total delivered items across all requirements for backward compat
+	if task_index >= requirement_progress.size():
+		return 0
+	var total: int = 0
+	for count in requirement_progress[task_index]:
+		total += count
+	return total
+
+func get_requirement_progress(task_index: int, req_index: int) -> int:
+	if task_index < requirement_progress.size() and req_index < requirement_progress[task_index].size():
+		return requirement_progress[task_index][req_index]
 	return 0
 
 func is_task_completed(index: int) -> bool:
@@ -119,15 +157,32 @@ func try_deliver_item(chain_type: int, tier: int) -> bool:
 	if zone_complete:
 		return false
 	var tasks: Array = _get_zone_tasks()
+	if current_task_index >= tasks.size():
+		return false
 	var task: Dictionary = tasks[current_task_index]
-	if chain_type == task["required_chain"] and tier == task["required_tier"]:
-		task_progress[current_task_index] += 1
-		item_delivered.emit(current_task_index, chain_type, tier)
-		task_updated.emit(current_task_index)
-		if task_progress[current_task_index] >= task["required_count"]:
-			_complete_task(current_task_index)
-		return true
+	var requirements: Array = task["requirements"]
+
+	# Find a matching requirement that isn't yet fulfilled
+	for req_idx in range(requirements.size()):
+		var req: Dictionary = requirements[req_idx]
+		if chain_type == req["chain"] and tier == req["tier"]:
+			if requirement_progress[current_task_index][req_idx] < req["count"]:
+				requirement_progress[current_task_index][req_idx] += 1
+				item_delivered.emit(current_task_index, chain_type, tier)
+				task_updated.emit(current_task_index)
+				# Check if ALL requirements for this task are fulfilled
+				if _is_task_fulfilled(current_task_index):
+					_complete_task(current_task_index)
+				return true
 	return false
+
+func _is_task_fulfilled(task_index: int) -> bool:
+	var tasks: Array = _get_zone_tasks()
+	var requirements: Array = tasks[task_index]["requirements"]
+	for req_idx in range(requirements.size()):
+		if requirement_progress[task_index][req_idx] < requirements[req_idx]["count"]:
+			return false
+	return true
 
 func _complete_task(index: int) -> void:
 	tasks_completed[index] = true
@@ -156,7 +211,6 @@ func get_completed_count() -> int:
 func is_zone_unlocked(zone: int) -> bool:
 	if zone <= 1:
 		return true
-	# Zone N requires Zone N-1 to be completed
 	return zones_completed.get(zone - 1, false)
 
 func get_highest_unlocked_zone() -> int:
@@ -169,7 +223,7 @@ func get_highest_unlocked_zone() -> int:
 func save_data() -> Dictionary:
 	return {
 		"current_zone": current_zone,
-		"task_progress": task_progress.duplicate(),
+		"requirement_progress": requirement_progress.duplicate(true),
 		"tasks_completed": tasks_completed.duplicate(),
 		"current_task_index": current_task_index,
 		"zone_complete": zone_complete,
@@ -178,8 +232,25 @@ func save_data() -> Dictionary:
 
 func load_data(data: Dictionary) -> void:
 	current_zone = data.get("current_zone", 1)
-	task_progress = data.get("task_progress", [0, 0, 0])
 	tasks_completed = data.get("tasks_completed", [false, false, false])
 	current_task_index = data.get("current_task_index", 0)
 	zone_complete = data.get("zone_complete", false)
 	zones_completed = data.get("zones_completed", {})
+	# Handle both old single-progress and new multi-requirement format
+	if data.has("requirement_progress"):
+		requirement_progress = data["requirement_progress"]
+	elif data.has("task_progress"):
+		# Backward compat: old format had flat array of ints
+		var old_progress: Array = data["task_progress"]
+		requirement_progress = []
+		for i in range(old_progress.size()):
+			requirement_progress.append([old_progress[i]])
+	else:
+		# Default: reset
+		var tasks: Array = _get_zone_tasks()
+		requirement_progress = []
+		for i in range(tasks.size()):
+			var req_counts: Array = []
+			for j in range(tasks[i]["requirements"].size()):
+				req_counts.append(0)
+			requirement_progress.append(req_counts)

@@ -47,8 +47,9 @@ func _on_task_completed(_task_index: int) -> void:
 func _update_task_display() -> void:
 	var task: Dictionary = TaskManager.get_current_task()
 	if task.is_empty():
+		var zone_name: String = "Zone " + str(TaskManager.current_zone)
 		if task_name_label:
-			task_name_label.text = "Zone 1 Complete!"
+			task_name_label.text = zone_name + " Complete!"
 		if task_desc_label:
 			task_desc_label.text = "All tasks finished."
 		if task_progress_label:
@@ -59,6 +60,13 @@ func _update_task_display() -> void:
 	if task_desc_label:
 		task_desc_label.text = task["description"]
 	if task_progress_label:
-		var progress: int = TaskManager.get_task_progress(TaskManager.current_task_index)
-		var required: int = task["required_count"]
-		task_progress_label.text = str(progress) + "/" + str(required)
+		# Build progress string from all requirements
+		var requirements: Array = task["requirements"]
+		var parts: Array = []
+		for req_idx in range(requirements.size()):
+			var req: Dictionary = requirements[req_idx]
+			var progress: int = TaskManager.get_requirement_progress(TaskManager.current_task_index, req_idx)
+			var needed: int = req["count"]
+			var item_name: String = ItemData.get_item_name(req["chain"], req["tier"])
+			parts.append(str(progress) + "/" + str(needed) + " " + item_name)
+		task_progress_label.text = " | ".join(parts)

@@ -38,23 +38,23 @@ const STORY_BEATS: Dictionary = {
 	],
 	"zone2_arrival": [
 		{"speaker": "Bramble", "portrait": "res://assets/portraits/bramble.svg",
-		 "text": "Well, well! You've gone and restored the garden. But look past those hedges — the old orchard is a right mess."},
-		{"speaker": "Bramble", "portrait": "res://assets/portraits/bramble.svg",
-		 "text": "Used to be the finest fruit trees in the valley. And the bees! Oh, the honey they made... magical stuff, truly."},
+		 "text": "Beyond the garden gate... the Whispering Woods! It's been ages since anyone tended these paths."},
 		{"speaker": "Hazel", "portrait": "res://assets/portraits/hazel.svg",
-		 "text": "The orchard needs stronger magic than the garden did. The trees are ancient and stubborn — but so are we."},
+		 "text": "The forest folk used to gather here by lantern-light. If we restore the grove, perhaps they'll return."},
 	],
-	"orchard_planted": [
+	"zone2_midpoint": [
 		{"speaker": "Bramble", "portrait": "res://assets/portraits/bramble.svg",
-		 "text": "Look at those trees standing tall again! I haven't seen golden apples since I was knee-high to a mushroom!"},
+		 "text": "Did you see that? A fox just peeked out from behind the ferns! The forest is waking up!"},
 		{"speaker": "Hazel", "portrait": "res://assets/portraits/hazel.svg",
-		 "text": "The orchard remembers. Every root, every branch — they were just waiting for someone to care again."},
+		 "text": "I knew they were still here. Keep going — the old shrine is just ahead."},
 	],
 	"zone2_complete": [
 		{"speaker": "Bramble", "portrait": "res://assets/portraits/bramble.svg",
-		 "text": "The orchard is alive! The bees are singing, the trees are heavy with fruit, and... do you feel that? The forest is waking up."},
+		 "text": "The grove is glowing! The forest folk are coming back — look, fireflies everywhere!"},
 		{"speaker": "Hazel", "portrait": "res://assets/portraits/hazel.svg",
-		 "text": "Two zones restored. The magic is spreading faster now. Whatever comes next, I know you're ready for it."},
+		 "text": "You've done something wonderful. But there's a sound from deeper in the woods... something ancient stirring."},
+		{"speaker": "Bramble", "portrait": "res://assets/portraits/bramble.svg",
+		 "text": "...Should we investigate?"},
 	],
 }
 

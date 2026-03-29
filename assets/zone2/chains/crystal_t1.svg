@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Shard - Tier 1 Crystal -->
+  <ellipse cx="24" cy="42" rx="6" ry="2" fill="#4A4A5A" opacity="0.3"/>
+  <polygon points="24,10 30,30 24,38 18,30" fill="#7090B0"/>
+  <polygon points="24,10 30,30 24,28" fill="#8AAAC8" opacity="0.7"/>
+  <line x1="24" y1="12" x2="24" y2="36" stroke="#A0C0E0" stroke-width="0.5" opacity="0.4"/>
+  <polygon points="22,18 24,14 26,20" fill="#B0D0F0" opacity="0.3"/>
+</svg>

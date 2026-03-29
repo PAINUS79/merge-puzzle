@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Spore - Tier 1 Mushroom -->
+  <ellipse cx="24" cy="38" rx="8" ry="3" fill="#5C4A2A" opacity="0.5"/>
+  <circle cx="24" cy="30" r="6" fill="#8B7355"/>
+  <circle cx="24" cy="30" r="4" fill="#A08B6A"/>
+  <circle cx="22" cy="28" r="1.5" fill="#C4B090" opacity="0.6"/>
+  <path d="M24 24 Q23 20 22 17" stroke="#7EC876" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <ellipse cx="21.5" cy="16" rx="2" ry="1.2" fill="#7EC876" transform="rotate(-20 21.5 16)"/>
+</svg>

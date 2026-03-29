@@ -5,6 +5,8 @@ func before_each() -> void:
 	EnergyManager.current_energy = EnergyManager.MAX_ENERGY
 	Economy.coins = 0
 	Economy.gems = 0
+	TaskManager.current_zone = 1
+	TaskManager.zones_completed = {}
 	TaskManager.reset_tasks()
 
 
@@ -19,19 +21,19 @@ func test_zone1_has_three_tasks() -> void:
 func test_task1_delivery_and_completion() -> void:
 	var task := TaskManager.get_current_task()
 	assert_eq(task["name"], "Clear the weeds")
-	assert_eq(task["required_chain"], 1)  # TOOLS
-	assert_eq(task["required_tier"], 4)
-	assert_eq(task["required_count"], 2)
+	assert_eq(task["requirements"][0]["chain"], 1)  # TOOLS
+	assert_eq(task["requirements"][0]["tier"], 4)
+	assert_eq(task["requirements"][0]["count"], 2)
 
 	# Deliver wrong chain — should fail
 	var result := TaskManager.try_deliver_item(0, 4)  # CROPS tier 4
 	assert_false(result, "Wrong chain should not deliver")
-	assert_eq(TaskManager.get_task_progress(0), 0)
+	assert_eq(TaskManager.get_requirement_progress(0, 0), 0)
 
 	# Deliver correct first item
 	result = TaskManager.try_deliver_item(1, 4)
 	assert_true(result, "Correct delivery should succeed")
-	assert_eq(TaskManager.get_task_progress(0), 1)
+	assert_eq(TaskManager.get_requirement_progress(0, 0), 1)
 	assert_false(TaskManager.is_task_completed(0), "Task not yet complete")
 
 	# Deliver second
@@ -41,7 +43,7 @@ func test_task1_delivery_and_completion() -> void:
 	assert_eq(TaskManager.current_task_index, 1, "Should advance to task 1")
 
 
-# Complete all zone 1 tasks → zone_complete
+# Complete all zone 1 tasks -> zone_complete
 func test_zone1_full_completion() -> void:
 	watch_signals(TaskManager)
 
@@ -97,8 +99,8 @@ func test_task_save_load_round_trip() -> void:
 	var saved := TaskManager.save_data()
 
 	TaskManager.reset_tasks()
-	assert_eq(TaskManager.get_task_progress(0), 0, "Reset should clear progress")
+	assert_eq(TaskManager.get_requirement_progress(0, 0), 0, "Reset should clear progress")
 
 	TaskManager.load_data(saved)
-	assert_eq(TaskManager.get_task_progress(0), 1, "Loaded progress should match")
+	assert_eq(TaskManager.get_requirement_progress(0, 0), 1, "Loaded progress should match")
 	assert_eq(TaskManager.current_task_index, 0, "Task index should match")

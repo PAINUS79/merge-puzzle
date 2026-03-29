@@ -30,12 +30,12 @@ var _pouches: Array = []
 
 const ZONE_NAMES: Dictionary = {
 	1: "The Overgrown Garden",
-	2: "The Wild Orchard",
+	2: "The Whispering Woods",
 }
 
 const ZONE_NAMES_RESTORED: Dictionary = {
 	1: "The Garden (Restored!)",
-	2: "The Wild Orchard (Restored!)",
+	2: "The Whispering Woods (Restored!)",
 }
 
 const ZONE_BEFORE_TEXTURES: Dictionary = {
@@ -72,6 +72,10 @@ func _setup_pouches_for_zone(zone: int) -> void:
 		_pouches.append(pouch)
 		var btn: Button = pouch.get_node("VBox/TapButton")
 		btn.text = ItemData.get_chain_name(chain_type)
+		# Apply Zone 2 pouch config for new chains
+		if ItemData.is_zone2_chain(chain_type):
+			pouch.charges = ItemData.ZONE2_POUCH_MAX_CHARGES
+			pouch._update_display()
 
 func _connect_signals() -> void:
 	game_board.merge_performed.connect(_on_merge_performed)
@@ -175,9 +179,10 @@ func _on_task_completed(task_index: int) -> void:
 			dialog_box.show_story_beat("garden_restored")
 			_set_state(GameState.DIALOG)
 	elif current_zone == 2:
-		if task_index == 0 and not story_flags.get("orchard_planted_shown", false):
-			story_flags["orchard_planted_shown"] = true
-			dialog_box.show_story_beat("orchard_planted")
+		# Show midpoint dialog after task 3 (index 2) per design spec
+		if task_index == 2 and not story_flags.get("zone2_midpoint_shown", false):
+			story_flags["zone2_midpoint_shown"] = true
+			dialog_box.show_story_beat("zone2_midpoint")
 			_set_state(GameState.DIALOG)
 	_save_game()
 
@@ -258,7 +263,7 @@ func _update_farm_map_display() -> void:
 	var total: int = TaskManager.get_total_tasks()
 	progress_label.text = str(completed) + "/" + str(total) + " tasks complete"
 
-	# Show zone navigation hint if Zone 2 is unlocked
+	# Show zone navigation
 	if TaskManager.is_zone_unlocked(2) and current_zone == 1 and is_restored:
 		zone_button.text = "Go to Zone 2"
 	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
@@ -270,9 +275,7 @@ func _show_map() -> void:
 	_set_state(GameState.MAP)
 
 func _on_zone_selected() -> void:
-	# Handle zone switching from map
 	if current_zone == 1 and TaskManager.zones_completed.get(1, false) and TaskManager.is_zone_unlocked(2):
-		# Switch to Zone 2
 		_switch_to_zone(2)
 		if not story_flags.get("zone2_arrival_shown", false):
 			story_flags["zone2_arrival_shown"] = true
@@ -281,7 +284,6 @@ func _on_zone_selected() -> void:
 		else:
 			_set_state(GameState.PLAYING)
 	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
-		# Allow going back to Zone 1 (view only if completed)
 		_switch_to_zone(1)
 		_set_state(GameState.PLAYING)
 	else:

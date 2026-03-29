@@ -10,6 +10,8 @@ func before_each() -> void:
 	EnergyManager.current_energy = EnergyManager.MAX_ENERGY
 	Economy.coins = 0
 	Economy.gems = 0
+	TaskManager.current_zone = 1
+	TaskManager.zones_completed = {}
 	TaskManager.reset_tasks()
 	# Create a fresh board
 	board = _board_script.new()

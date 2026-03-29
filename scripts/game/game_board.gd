@@ -201,9 +201,8 @@ func _perform_merge(source: MergeItem, target: MergeItem, to_col: int, to_row: i
 	SfxManager.play_merge()
 	_last_merge_data = {"chain_type": chain, "tier": new_tier}
 	merge_performed.emit(chain, new_tier)
-	# Check if this item can be delivered to a task
-	if new_tier == ItemData.MAX_TIER:
-		TaskManager.try_deliver_item(chain, new_tier)
+	# Check if this item can be delivered to the current task
+	TaskManager.try_deliver_item(chain, new_tier)
 	# Auto-save
 	_auto_save()
 

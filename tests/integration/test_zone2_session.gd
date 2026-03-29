@@ -1,6 +1,6 @@
 extends GutTest
-## Integration test: Zone 2 play session
-## Full game loop: Zone 1 completion → Zone 2 unlock → Zone 2 play → Zone 2 completion
+## Integration test: Zone 2 play session (Whispering Woods)
+## Full game loop: Zone 1 completion -> Zone 2 unlock -> Zone 2 merges -> completion
 
 var board: Node2D = null
 var _board_script: GDScript = preload("res://scripts/game/game_board.gd")
@@ -25,97 +25,98 @@ func _place_item(chain_type: int, tier: int, col: int, row: int) -> MergeItem:
 	return item
 
 func _build_max_tier(chain_type: int, start_col: int) -> void:
-	"""Build a max-tier item by merging up from tier 0."""
-	# Place tier 0 pair and merge up through all tiers
+	"""Build a max-tier item by merging from tier 0 up."""
 	var s := _place_item(chain_type, 0, start_col, 0)
 	var t := _place_item(chain_type, 0, start_col + 1, 0)
 	board._perform_merge(s, t, start_col + 1, 0)
 	await get_tree().process_frame
-
 	for tier in range(1, ItemData.MAX_TIER):
 		var extra := _place_item(chain_type, tier, start_col, 0)
 		board._perform_merge(extra, board.grid[start_col + 1][0], start_col + 1, 0)
 		await get_tree().process_frame
 
+func _clear_cell(col: int, row: int) -> void:
+	if board.grid[col][row] != null:
+		board.grid[col][row].queue_free()
+		board.grid[col][row] = null
 
-# Full cross-zone play session
+
+# Full cross-zone session with board merges
 func test_full_cross_zone_session() -> void:
 	watch_signals(TaskManager)
 
-	# --- Phase 1: Complete Zone 1 via direct task delivery ---
-	TaskManager.try_deliver_item(1, 4)  # TOOLS
+	# --- Phase 1: Complete Zone 1 ---
 	TaskManager.try_deliver_item(1, 4)
-	TaskManager.try_deliver_item(0, 4)  # CROPS
+	TaskManager.try_deliver_item(1, 4)
 	TaskManager.try_deliver_item(0, 4)
-	TaskManager.try_deliver_item(2, 4)  # CREATURES
-
+	TaskManager.try_deliver_item(0, 4)
+	TaskManager.try_deliver_item(2, 4)
 	assert_true(TaskManager.zone_complete, "Zone 1 complete")
-	assert_true(TaskManager.is_zone_unlocked(2), "Zone 2 unlocked")
+	assert_true(TaskManager.is_zone_unlocked(2))
 	var z1_coins := Economy.coins
-	var z1_gems := Economy.gems
 
 	# --- Phase 2: Switch to Zone 2 ---
 	TaskManager.set_zone(2)
 	assert_eq(TaskManager.current_zone, 2)
-	assert_false(TaskManager.zone_complete, "Zone 2 not yet complete")
-	assert_eq(TaskManager.get_total_tasks(), 3)
+	assert_eq(TaskManager.get_total_tasks(), 5)
 
-	# --- Phase 3: Build and deliver Orchard items via board merges ---
-	_build_max_tier(ItemData.ChainType.ORCHARD, 0)
-	assert_eq(board.grid[1][0].tier, ItemData.MAX_TIER, "First Golden Apple Tree built")
-	assert_eq(TaskManager.get_task_progress(0), 1, "First orchard delivery auto-registered")
-
-	# Clean up board for next build
-	board.grid[1][0].queue_free()
-	board.grid[1][0] = null
+	# --- Phase 3: Build Glowcap via board merges (Task 1) ---
+	_build_max_tier(ItemData.ChainType.MUSHROOMS, 0)
+	assert_eq(board.grid[1][0].tier, ItemData.MAX_TIER, "Glowcap built")
+	assert_eq(TaskManager.get_requirement_progress(0, 0), 1, "Auto-delivered")
+	_clear_cell(1, 0)
 	await get_tree().process_frame
 
-	_build_max_tier(ItemData.ChainType.ORCHARD, 0)
-	assert_true(TaskManager.is_task_completed(0), "Task 0 (Plant the orchard) complete")
-	assert_eq(Economy.coins, z1_coins + 250, "Received orchard task reward")
-
-	# Clean up
-	board.grid[1][0].queue_free()
-	board.grid[1][0] = null
+	_build_max_tier(ItemData.ChainType.MUSHROOMS, 0)
+	assert_true(TaskManager.is_task_completed(0), "Task 1 complete")
+	assert_eq(Economy.coins, z1_coins + 120)
+	_clear_cell(1, 0)
 	await get_tree().process_frame
 
-	# --- Phase 4: Complete remaining Zone 2 tasks via direct delivery ---
-	# Task 1: 2x HONEY tier 4
+	# --- Phase 4: Complete remaining tasks via direct delivery ---
+	# Task 2: 1x Star Crystal + 1x Garden Fence
 	TaskManager.try_deliver_item(4, 4)
-	TaskManager.try_deliver_item(4, 4)
-	assert_true(TaskManager.is_task_completed(1), "Task 1 (Sweeten the grove) complete")
+	TaskManager.try_deliver_item(1, 4)
+	assert_true(TaskManager.is_task_completed(1))
 
-	# Task 2: 2x CREATURES tier 4
+	# Task 3: 3x Shiitake Cluster + 1x Golden Harvest
+	TaskManager.try_deliver_item(3, 3)
+	TaskManager.try_deliver_item(3, 3)
+	TaskManager.try_deliver_item(3, 3)
+	TaskManager.try_deliver_item(0, 4)
+	assert_true(TaskManager.is_task_completed(2))
+
+	# Task 4: 2x Star Crystal + 2x Glowcap
+	TaskManager.try_deliver_item(4, 4)
+	TaskManager.try_deliver_item(4, 4)
+	TaskManager.try_deliver_item(3, 4)
+	TaskManager.try_deliver_item(3, 4)
+	assert_true(TaskManager.is_task_completed(3))
+
+	# Task 5: 1x Phoenix Chicken + 1x Star Crystal + 1x Glowcap
 	TaskManager.try_deliver_item(2, 4)
-	TaskManager.try_deliver_item(2, 4)
+	TaskManager.try_deliver_item(4, 4)
+	TaskManager.try_deliver_item(3, 4)
 	assert_true(TaskManager.zone_complete, "Zone 2 complete")
-	assert_true(TaskManager.zones_completed.get(2, false))
 	assert_signal_emitted(TaskManager, "zone_completed")
-
-	# Verify cumulative rewards
-	var expected_coins: int = z1_coins + 250 + 300 + 400
-	assert_eq(Economy.coins, expected_coins, "Total coins from both zones")
 
 
 # Energy consumption during Zone 2 merges
 func test_zone2_energy_consumption() -> void:
 	var initial := EnergyManager.current_energy
-
-	var s := _place_item(ItemData.ChainType.ORCHARD, 0, 0, 0)
-	var t := _place_item(ItemData.ChainType.ORCHARD, 0, 1, 0)
+	var s := _place_item(ItemData.ChainType.MUSHROOMS, 0, 0, 0)
+	var t := _place_item(ItemData.ChainType.MUSHROOMS, 0, 1, 0)
 	board._perform_merge(s, t, 1, 0)
 	await get_tree().process_frame
-
-	assert_eq(EnergyManager.current_energy, initial - 1, "Energy consumed for Zone 2 merge")
+	assert_eq(EnergyManager.current_energy, initial - 1, "1 energy per merge in Zone 2")
 
 
 # Board consistency with Zone 2 items
 func test_zone2_board_consistency() -> void:
 	var board_size: int = board.COLS * board.ROWS
-
-	_place_item(ItemData.ChainType.ORCHARD, 0, 0, 0)
-	_place_item(ItemData.ChainType.ORCHARD, 0, 1, 0)
-	_place_item(ItemData.ChainType.HONEY, 1, 4, 4)
+	_place_item(ItemData.ChainType.MUSHROOMS, 0, 0, 0)
+	_place_item(ItemData.ChainType.MUSHROOMS, 0, 1, 0)
+	_place_item(ItemData.ChainType.CRYSTALS, 1, 4, 4)
 
 	var items := 0
 	var empty := 0

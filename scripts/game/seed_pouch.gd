@@ -9,6 +9,8 @@ var charges: int = ItemData.POUCH_MAX_CHARGES
 var cooldown_timer: float = 0.0
 var is_on_cooldown: bool = false
 var _recharge_timer: float = 0.0
+var _cooldown_duration: float = ItemData.POUCH_COOLDOWN
+var _recharge_duration: float = ItemData.POUCH_RECHARGE_TIME
 
 @onready var icon: TextureRect = $VBox/Icon
 @onready var charge_label: Label = $VBox/ChargeLabel
@@ -31,16 +33,17 @@ func _load_pouch_icon() -> void:
 func _process(delta: float) -> void:
 	if is_on_cooldown:
 		cooldown_timer -= delta
-		cooldown_bar.value = (cooldown_timer / ItemData.POUCH_COOLDOWN) * 100.0
+		cooldown_bar.value = (cooldown_timer / _cooldown_duration) * 100.0
 		if cooldown_timer <= 0.0:
 			is_on_cooldown = false
 			cooldown_bar.visible = false
 	# Recharge charges over time
-	if charges < ItemData.POUCH_MAX_CHARGES:
+	var max_charges: int = ItemData.ZONE2_POUCH_MAX_CHARGES if ItemData.is_zone2_chain(chain_type) else ItemData.POUCH_MAX_CHARGES
+	if charges < max_charges:
 		_recharge_timer += delta
-		if _recharge_timer >= ItemData.POUCH_RECHARGE_TIME:
-			_recharge_timer -= ItemData.POUCH_RECHARGE_TIME
-			charges = mini(charges + 1, ItemData.POUCH_MAX_CHARGES)
+		if _recharge_timer >= _recharge_duration:
+			_recharge_timer -= _recharge_duration
+			charges = mini(charges + 1, max_charges)
 			_update_display()
 
 func _on_tap() -> void:
@@ -48,7 +51,9 @@ func _on_tap() -> void:
 		return
 	charges -= 1
 	is_on_cooldown = true
-	cooldown_timer = ItemData.POUCH_COOLDOWN
+	_cooldown_duration = ItemData.ZONE2_POUCH_COOLDOWN if ItemData.is_zone2_chain(chain_type) else ItemData.POUCH_COOLDOWN
+	_recharge_duration = ItemData.ZONE2_POUCH_RECHARGE_TIME if ItemData.is_zone2_chain(chain_type) else ItemData.POUCH_RECHARGE_TIME
+	cooldown_timer = _cooldown_duration
 	cooldown_bar.visible = true
 	cooldown_bar.value = 100.0
 	_update_display()
