@@ -381,8 +381,8 @@ offset_bottom = 400.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 15
 theme_override_colors/font_color = Color(0.92, 0.94, 0.88, 0.9)
-text = "The Overgrown Garden has been restored!
-Coming Soon: Zone 2..."
+text = "Zone Complete!
+New adventures await..."
 horizontal_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="UI/ZoneCompleteScreen"]

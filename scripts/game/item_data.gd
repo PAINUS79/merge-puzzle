@@ -1,6 +1,6 @@
 extends Node
 
-enum ChainType { CROPS, TOOLS, CREATURES }
+enum ChainType { CROPS, TOOLS, CREATURES, ORCHARD, HONEY }
 
 const CHAINS: Dictionary = {
 	ChainType.CROPS: [
@@ -24,6 +24,20 @@ const CHAINS: Dictionary = {
 		{ "name": "Rooster", "sprite": "res://assets/items/creatures_t4.svg", "sell_value": 8 },
 		{ "name": "Phoenix Chicken", "sprite": "res://assets/items/creatures_t5.svg", "sell_value": 16 },
 	],
+	ChainType.ORCHARD: [
+		{ "name": "Apple Pip", "sprite": "res://assets/zone2/chains/orchard_t1.svg", "sell_value": 2 },
+		{ "name": "Sapling", "sprite": "res://assets/zone2/chains/orchard_t2.svg", "sell_value": 4 },
+		{ "name": "Young Tree", "sprite": "res://assets/zone2/chains/orchard_t3.svg", "sell_value": 8 },
+		{ "name": "Fruit Tree", "sprite": "res://assets/zone2/chains/orchard_t4.svg", "sell_value": 16 },
+		{ "name": "Golden Apple Tree", "sprite": "res://assets/zone2/chains/orchard_t5.svg", "sell_value": 32 },
+	],
+	ChainType.HONEY: [
+		{ "name": "Wildflower", "sprite": "res://assets/zone2/chains/honey_t1.svg", "sell_value": 2 },
+		{ "name": "Bee Cluster", "sprite": "res://assets/zone2/chains/honey_t2.svg", "sell_value": 4 },
+		{ "name": "Honeycomb", "sprite": "res://assets/zone2/chains/honey_t3.svg", "sell_value": 8 },
+		{ "name": "Royal Honeycomb", "sprite": "res://assets/zone2/chains/honey_t4.svg", "sell_value": 16 },
+		{ "name": "Ambrosia Jar", "sprite": "res://assets/zone2/chains/honey_t5.svg", "sell_value": 32 },
+	],
 }
 
 const MAX_TIER: int = 4  # 0-indexed, so tier 5 = index 4
@@ -31,6 +45,15 @@ const MAX_TIER: int = 4  # 0-indexed, so tier 5 = index 4
 const POUCH_COOLDOWN: float = 8.0
 const POUCH_MAX_CHARGES: int = 5
 const POUCH_RECHARGE_TIME: float = 90.0
+
+# Zone-to-chain mapping
+const ZONE_CHAINS: Dictionary = {
+	1: [ChainType.CROPS, ChainType.TOOLS, ChainType.CREATURES],
+	2: [ChainType.ORCHARD, ChainType.HONEY, ChainType.CREATURES],
+}
+
+func get_chains_for_zone(zone: int) -> Array:
+	return ZONE_CHAINS.get(zone, ZONE_CHAINS[1])
 
 func get_item_name(chain_type: int, tier: int) -> String:
 	return CHAINS[chain_type][tier]["name"]
@@ -49,4 +72,6 @@ func get_chain_name(chain_type: int) -> String:
 		ChainType.CROPS: return "Crops"
 		ChainType.TOOLS: return "Tools"
 		ChainType.CREATURES: return "Creatures"
+		ChainType.ORCHARD: return "Orchard"
+		ChainType.HONEY: return "Honey"
 		_: return "Unknown"

@@ -3,6 +3,7 @@ extends Node2D
 enum GameState { MENU, PLAYING, DIALOG, MAP, ZONE_COMPLETE }
 
 var current_state: int = GameState.MENU
+var current_zone: int = 1
 var story_flags: Dictionary = {}
 var tutorial: Node = null
 
@@ -27,29 +28,50 @@ var tutorial: Node = null
 
 var _pouches: Array = []
 
+const ZONE_NAMES: Dictionary = {
+	1: "The Overgrown Garden",
+	2: "The Wild Orchard",
+}
+
+const ZONE_NAMES_RESTORED: Dictionary = {
+	1: "The Garden (Restored!)",
+	2: "The Wild Orchard (Restored!)",
+}
+
+const ZONE_BEFORE_TEXTURES: Dictionary = {
+	1: "res://assets/farm/zone1_before.svg",
+	2: "res://assets/farm/zone2_before.svg",
+}
+
+const ZONE_AFTER_TEXTURES: Dictionary = {
+	1: "res://assets/farm/zone1_after.svg",
+	2: "res://assets/farm/zone2_after.svg",
+}
+
 func _ready() -> void:
 	tutorial = preload("res://scripts/game/tutorial_manager.gd").new()
 	tutorial.name = "TutorialManager"
 	add_child(tutorial)
 
-	_setup_pouches()
 	_connect_signals()
 	_load_or_new_game()
 
-func _setup_pouches() -> void:
+func _setup_pouches_for_zone(zone: int) -> void:
+	# Clear existing pouches
+	for pouch in _pouches:
+		pouch.queue_free()
+	_pouches.clear()
+
 	var pouch_scene := preload("res://scenes/game/seed_pouch.tscn")
-	for chain_type in [ItemData.ChainType.CROPS, ItemData.ChainType.TOOLS, ItemData.ChainType.CREATURES]:
+	var chains: Array = ItemData.get_chains_for_zone(zone)
+	for chain_type in chains:
 		var pouch: Control = pouch_scene.instantiate()
 		pouch.chain_type = chain_type
 		pouch_container.add_child(pouch)
 		pouch.pouch_tapped.connect(_on_pouch_tapped)
 		_pouches.append(pouch)
-		# Update button text with chain name
 		var btn: Button = pouch.get_node("VBox/TapButton")
-		match chain_type:
-			ItemData.ChainType.CROPS: btn.text = "Crops"
-			ItemData.ChainType.TOOLS: btn.text = "Tools"
-			ItemData.ChainType.CREATURES: btn.text = "Eggs"
+		btn.text = ItemData.get_chain_name(chain_type)
 
 func _connect_signals() -> void:
 	game_board.merge_performed.connect(_on_merge_performed)
@@ -75,15 +97,19 @@ func _load_or_new_game() -> void:
 			story_flags = data["story_flags"]
 		if data.has("tutorial"):
 			tutorial.load_data(data["tutorial"])
+		current_zone = story_flags.get("current_zone", 1)
+		TaskManager.current_zone = current_zone
+		_setup_pouches_for_zone(current_zone)
 		menu_screen.get_node("PlayButton").text = "Continue"
 	else:
+		current_zone = 1
+		_setup_pouches_for_zone(current_zone)
 		menu_screen.get_node("PlayButton").text = "New Game"
 
 func _start_game() -> void:
 	if not story_flags.get("arrival_shown", false):
 		story_flags["arrival_shown"] = true
 		_set_state(GameState.MAP)
-		# Show arrival dialog over the farm map
 		dialog_box.show_story_beat("arrival")
 	else:
 		_set_state(GameState.PLAYING)
@@ -130,7 +156,6 @@ func _on_pouch_tapped(chain_type: int) -> void:
 
 func _on_merge_performed(chain_type: int, new_tier: int) -> void:
 	tutorial.on_merge_performed()
-	# Show first merge dialog
 	if not story_flags.get("first_merge_shown", false) and tutorial.current_step >= tutorial.Step.DRAG_TO_MERGE:
 		story_flags["first_merge_shown"] = true
 	_save_game()
@@ -144,29 +169,45 @@ func _on_board_full() -> void:
 func _on_task_completed(task_index: int) -> void:
 	SfxManager.play_task_complete()
 	tutorial.on_task_completed(task_index)
-	# Show appropriate story beat
-	if task_index == 0 and not story_flags.get("garden_restored_shown", false):
-		story_flags["garden_restored_shown"] = true
-		dialog_box.show_story_beat("garden_restored")
-		_set_state(GameState.DIALOG)
+	if current_zone == 1:
+		if task_index == 0 and not story_flags.get("garden_restored_shown", false):
+			story_flags["garden_restored_shown"] = true
+			dialog_box.show_story_beat("garden_restored")
+			_set_state(GameState.DIALOG)
+	elif current_zone == 2:
+		if task_index == 0 and not story_flags.get("orchard_planted_shown", false):
+			story_flags["orchard_planted_shown"] = true
+			dialog_box.show_story_beat("orchard_planted")
+			_set_state(GameState.DIALOG)
 	_save_game()
 
 func _on_zone_completed() -> void:
-	if not story_flags.get("cliffhanger_shown", false):
-		story_flags["cliffhanger_shown"] = true
-		dialog_box.show_story_beat("cliffhanger")
-		_set_state(GameState.DIALOG)
-		story_flags["pending_zone_complete"] = true
-	else:
-		_set_state(GameState.ZONE_COMPLETE)
+	if current_zone == 1:
+		if not story_flags.get("cliffhanger_shown", false):
+			story_flags["cliffhanger_shown"] = true
+			dialog_box.show_story_beat("cliffhanger")
+			_set_state(GameState.DIALOG)
+			story_flags["pending_zone_complete"] = true
+		else:
+			_set_state(GameState.ZONE_COMPLETE)
+	elif current_zone == 2:
+		if not story_flags.get("zone2_complete_shown", false):
+			story_flags["zone2_complete_shown"] = true
+			dialog_box.show_story_beat("zone2_complete")
+			_set_state(GameState.DIALOG)
+			story_flags["pending_zone_complete"] = true
+		else:
+			_set_state(GameState.ZONE_COMPLETE)
 	_save_game()
 
 func _on_dialog_finished() -> void:
 	if story_flags.get("pending_zone_complete", false):
 		story_flags["pending_zone_complete"] = false
 		_set_state(GameState.ZONE_COMPLETE)
+	elif story_flags.get("pending_zone2_start", false):
+		story_flags["pending_zone2_start"] = false
+		_set_state(GameState.PLAYING)
 	elif not story_flags.get("first_merge_dialog_shown", false) and story_flags.get("arrival_shown", false):
-		# Transition to playing state, then show the first merge tutorial dialog
 		story_flags["first_merge_dialog_shown"] = true
 		_set_state(GameState.PLAYING)
 		tutorial.start_tutorial()
@@ -180,23 +221,71 @@ func _on_tutorial_step_changed(_step: int) -> void:
 		tutorial_label.text = tutorial.get_hint_text()
 		tutorial_label.visible = tutorial.get_hint_text() != ""
 
+func _switch_to_zone(zone: int) -> void:
+	current_zone = zone
+	story_flags["current_zone"] = zone
+	TaskManager.set_zone(zone)
+	# Clear the board for the new zone
+	game_board.load_grid_data([])
+	_setup_pouches_for_zone(zone)
+	_save_game()
+
 func _update_farm_map_display() -> void:
-	var is_restored: bool = TaskManager.zone_complete
+	var is_restored: bool = TaskManager.zones_completed.get(current_zone, false)
+	var before_path: String = ZONE_BEFORE_TEXTURES.get(current_zone, "")
+	var after_path: String = ZONE_AFTER_TEXTURES.get(current_zone, "")
+
+	if before_path != "":
+		var before_tex = load(before_path)
+		if before_tex:
+			zone_before.texture = before_tex
+	if after_path != "":
+		var after_tex = load(after_path)
+		if after_tex:
+			zone_after.texture = after_tex
+
 	zone_before.visible = not is_restored
 	zone_after.visible = is_restored
+
+	var zone_name: String
 	if is_restored:
-		zone_label.text = "Zone 1: The Garden (Restored!)"
+		zone_name = ZONE_NAMES_RESTORED.get(current_zone, "Zone " + str(current_zone))
 	else:
-		zone_label.text = "Zone 1: The Overgrown Garden"
+		zone_name = ZONE_NAMES.get(current_zone, "Zone " + str(current_zone))
+	zone_label.text = "Zone " + str(current_zone) + ": " + zone_name
+
 	var completed: int = TaskManager.get_completed_count()
 	var total: int = TaskManager.get_total_tasks()
 	progress_label.text = str(completed) + "/" + str(total) + " tasks complete"
+
+	# Show zone navigation hint if Zone 2 is unlocked
+	if TaskManager.is_zone_unlocked(2) and current_zone == 1 and is_restored:
+		zone_button.text = "Go to Zone 2"
+	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
+		zone_button.text = "Back to Zone 1"
+	else:
+		zone_button.text = "Enter Zone"
 
 func _show_map() -> void:
 	_set_state(GameState.MAP)
 
 func _on_zone_selected() -> void:
-	_set_state(GameState.PLAYING)
+	# Handle zone switching from map
+	if current_zone == 1 and TaskManager.zones_completed.get(1, false) and TaskManager.is_zone_unlocked(2):
+		# Switch to Zone 2
+		_switch_to_zone(2)
+		if not story_flags.get("zone2_arrival_shown", false):
+			story_flags["zone2_arrival_shown"] = true
+			dialog_box.show_story_beat("zone2_arrival")
+			story_flags["pending_zone2_start"] = true
+		else:
+			_set_state(GameState.PLAYING)
+	elif current_zone == 2 and TaskManager.zones_completed.get(1, false):
+		# Allow going back to Zone 1 (view only if completed)
+		_switch_to_zone(1)
+		_set_state(GameState.PLAYING)
+	else:
+		_set_state(GameState.PLAYING)
 
 func _on_back_to_grid() -> void:
 	_set_state(GameState.PLAYING)
@@ -207,6 +296,7 @@ func _on_zone_complete_continue() -> void:
 func _save_game() -> void:
 	var tutorial_data: Dictionary = tutorial.save_data() if tutorial else {}
 	story_flags["tutorial"] = tutorial_data
+	story_flags["current_zone"] = current_zone
 	SaveManager.save_game(game_board.get_grid_save_data(), story_flags)
 
 func _notification(what: int) -> void:
