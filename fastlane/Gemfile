@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
-gem "fastlane"
+# Pin to a stable minor version once the first successful build is confirmed.
+# Update the constraint deliberately when upgrading (not silently via dep resolution).
+gem "fastlane", "~> 2.226"
 
-# Plugins
+# Plugins (uncomment as needed)
 # gem "fastlane-plugin-versioning"  # auto-increment build numbers
