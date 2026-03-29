@@ -18,8 +18,8 @@ var tutorial: Node = null
 @onready var zone_complete_screen: Control = $UI/ZoneCompleteScreen
 
 # Farm map sub-nodes
-@onready var zone_before: ColorRect = $UI/FarmMap/ZoneBefore
-@onready var zone_after: ColorRect = $UI/FarmMap/ZoneAfter
+@onready var zone_before: TextureRect = $UI/FarmMap/ZoneBefore
+@onready var zone_after: TextureRect = $UI/FarmMap/ZoneAfter
 @onready var zone_label: Label = $UI/FarmMap/ZoneLabel
 @onready var progress_label: Label = $UI/FarmMap/ProgressLabel
 @onready var zone_button: Button = $UI/FarmMap/ZoneButton

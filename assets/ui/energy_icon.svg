@@ -1,3 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Glow circle -->
+  <circle cx="24" cy="24" r="18" fill="#FFF8DC" opacity="0.2"/>
+  <!-- Lightning bolt -->
   <polygon points="28,2 14,26 22,26 20,46 34,22 26,22" fill="#FFD700" stroke="#DAA520" stroke-width="1.5"/>
+  <!-- Inner highlight -->
+  <polygon points="27,6 18,24 23,24 21,40 31,23 26,23" fill="#FFEC8B" opacity="0.5"/>
+  <!-- Sparkle -->
+  <circle cx="12" cy="14" r="1.5" fill="#FFD700" opacity="0.7"/>
+  <circle cx="36" cy="34" r="1" fill="#FFD700" opacity="0.6"/>
 </svg>

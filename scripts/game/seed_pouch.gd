@@ -16,9 +16,17 @@ var _recharge_timer: float = 0.0
 @onready var tap_button: Button = $VBox/TapButton
 
 func _ready() -> void:
+	_load_pouch_icon()
 	_update_display()
 	tap_button.pressed.connect(_on_tap)
 	cooldown_bar.visible = false
+
+func _load_pouch_icon() -> void:
+	var sprite_path: String = ItemData.get_item_sprite_path(chain_type, 0)
+	if sprite_path != "" and icon:
+		var tex = load(sprite_path)
+		if tex:
+			icon.texture = tex
 
 func _process(delta: float) -> void:
 	if is_on_cooldown:

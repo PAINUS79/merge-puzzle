@@ -1,4 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <polygon points="24,4 40,22 24,40 8,22" fill="#FF00FF"/>
-  <text x="24" y="47" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">Phoenix</text>
+  <!-- Phoenix body -->
+  <ellipse cx="24" cy="26" rx="10" ry="8" fill="#FF6B35"/>
+  <ellipse cx="24" cy="26" rx="10" ry="8" fill="url(#phoenix_glow)" opacity="0.5"/>
+  <!-- Inner glow gradient -->
+  <defs>
+    <radialGradient id="phoenix_glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FF4500" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fire_grad" cx="50%" cy="80%" r="70%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FF4500"/>
+    </radialGradient>
+  </defs>
+  <!-- Tail feathers (flame-like) -->
+  <path d="M14,30 Q8,24 10,16 Q14,22 16,26Z" fill="#FF4500" opacity="0.9"/>
+  <path d="M12,32 Q4,28 6,18 Q10,26 14,30Z" fill="#FF6347" opacity="0.7"/>
+  <path d="M34,30 Q40,24 38,16 Q34,22 32,26Z" fill="#FF4500" opacity="0.9"/>
+  <path d="M36,32 Q44,28 42,18 Q38,26 34,30Z" fill="#FF6347" opacity="0.7"/>
+  <!-- Wing left -->
+  <path d="M14,26 Q6,20 8,12 Q12,18 16,22Z" fill="#FF8C00"/>
+  <!-- Wing right -->
+  <path d="M34,26 Q42,20 40,12 Q36,18 32,22Z" fill="#FF8C00"/>
+  <!-- Head -->
+  <circle cx="24" cy="18" r="6" fill="#FFB347"/>
+  <!-- Crown feathers -->
+  <path d="M21,14 L20,6 L23,12Z" fill="#FFD700"/>
+  <path d="M24,13 L24,4 L26,12Z" fill="#FFA500"/>
+  <path d="M27,14 L28,6 L25,12Z" fill="#FFD700"/>
+  <!-- Eye -->
+  <circle cx="22" cy="17" r="1.5" fill="#8B0000"/>
+  <circle cx="22" cy="16.5" r="0.5" fill="white"/>
+  <!-- Beak -->
+  <polygon points="20,19 17,20 20,21" fill="#DAA520"/>
+  <!-- Chest feathers -->
+  <ellipse cx="24" cy="28" rx="6" ry="4" fill="#FFD700" opacity="0.6"/>
+  <!-- Feet -->
+  <path d="M20,34 L18,38 M20,34 L20,38 M20,34 L22,38" stroke="#DAA520" stroke-width="1" fill="none"/>
+  <path d="M28,34 L26,38 M28,34 L28,38 M28,34 L30,38" stroke="#DAA520" stroke-width="1" fill="none"/>
+  <!-- Sparkle effects -->
+  <circle cx="10" cy="10" r="1" fill="#FFD700" opacity="0.8"/>
+  <circle cx="38" cy="8" r="1" fill="#FFD700" opacity="0.8"/>
+  <circle cx="6" cy="24" r="0.8" fill="#FFA500" opacity="0.6"/>
+  <circle cx="42" cy="22" r="0.8" fill="#FFA500" opacity="0.6"/>
 </svg>

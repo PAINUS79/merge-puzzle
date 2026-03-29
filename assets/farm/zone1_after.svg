@@ -1,32 +1,69 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 400" width="390" height="400">
-  <!-- Sky -->
+  <!-- Blue sky -->
   <rect width="390" height="160" fill="#87CEEB"/>
+  <!-- Fluffy clouds -->
+  <ellipse cx="80" cy="50" rx="50" ry="20" fill="white" opacity="0.7"/>
+  <ellipse cx="60" cy="45" rx="30" ry="15" fill="white" opacity="0.6"/>
+  <ellipse cx="280" cy="60" rx="45" ry="18" fill="white" opacity="0.6"/>
   <!-- Sun -->
-  <circle cx="340" cy="50" r="30" fill="#FFD700"/>
-  <!-- Ground -->
+  <circle cx="340" cy="45" r="28" fill="#FFD700"/>
+  <circle cx="340" cy="45" r="22" fill="#FFEC8B" opacity="0.5"/>
+  <!-- Sun rays -->
+  <line x1="340" y1="10" x2="340" y2="2" stroke="#FFD700" stroke-width="2" opacity="0.4"/>
+  <line x1="365" y1="20" x2="372" y2="15" stroke="#FFD700" stroke-width="2" opacity="0.4"/>
+  <line x1="370" y1="45" x2="378" y2="45" stroke="#FFD700" stroke-width="2" opacity="0.4"/>
+  <!-- Lush green ground -->
   <rect y="160" width="390" height="240" fill="#7CCD7C"/>
+  <!-- Grass texture -->
+  <rect x="0" y="160" width="390" height="15" fill="#6BBE6B" opacity="0.6"/>
   <!-- Garden beds -->
-  <rect x="20" y="180" width="80" height="50" rx="6" fill="#5B8C2A"/>
-  <rect x="120" y="180" width="80" height="50" rx="6" fill="#6B9E3A"/>
-  <rect x="220" y="180" width="80" height="50" rx="6" fill="#5B8C2A"/>
+  <rect x="20" y="185" width="100" height="55" rx="8" fill="#5B8C2A" stroke="#4A7A1A" stroke-width="1"/>
+  <rect x="30" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
+  <rect x="55" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
+  <rect x="80" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
+  <rect x="30" y="218" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="55" y="218" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="80" y="218" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="145" y="185" width="100" height="55" rx="8" fill="#6B9E3A" stroke="#5A8E2A" stroke-width="1"/>
+  <rect x="155" y="192" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="180" y="192" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="205" y="192" width="20" height="8" rx="2" fill="#8BC34A" opacity="0.6"/>
+  <rect x="270" y="185" width="100" height="55" rx="8" fill="#5B8C2A" stroke="#4A7A1A" stroke-width="1"/>
+  <rect x="280" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
+  <rect x="305" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
+  <rect x="330" y="192" width="20" height="8" rx="2" fill="#7CB342" opacity="0.6"/>
   <!-- Flowers -->
-  <circle cx="40" cy="270" r="8" fill="#FF69B4"/>
-  <circle cx="80" cy="280" r="8" fill="#FF6347"/>
-  <circle cx="140" cy="265" r="8" fill="#FFD700"/>
-  <circle cx="200" cy="275" r="8" fill="#FF69B4"/>
-  <circle cx="260" cy="268" r="8" fill="#DDA0DD"/>
-  <circle cx="320" cy="278" r="8" fill="#FF6347"/>
+  <circle cx="35" cy="275" r="7" fill="#FF69B4"/>
+  <circle cx="35" cy="275" r="3" fill="#FFD700"/>
+  <circle cx="80" cy="285" r="6" fill="#FF6347"/>
+  <circle cx="80" cy="285" r="2.5" fill="#FFD700"/>
+  <circle cx="140" cy="270" r="7" fill="#DDA0DD"/>
+  <circle cx="140" cy="270" r="3" fill="#FFD700"/>
+  <circle cx="200" cy="280" r="6" fill="#FF69B4"/>
+  <circle cx="200" cy="280" r="2.5" fill="#FFD700"/>
+  <circle cx="260" cy="273" r="7" fill="#FF6347"/>
+  <circle cx="260" cy="273" r="3" fill="#FFD700"/>
+  <circle cx="320" cy="282" r="6" fill="#DDA0DD"/>
+  <circle cx="320" cy="282" r="2.5" fill="#FFD700"/>
   <!-- Trees -->
-  <rect x="50" y="300" width="12" height="40" fill="#8B6914"/>
-  <circle cx="56" cy="290" r="22" fill="#228B22"/>
-  <rect x="300" y="310" width="12" height="35" fill="#8B6914"/>
-  <circle cx="306" cy="300" r="20" fill="#2E8B57"/>
-  <!-- Fence -->
-  <rect x="10" y="350" width="370" height="4" fill="#A0522D"/>
-  <rect x="30" y="340" width="6" height="20" fill="#A0522D"/>
-  <rect x="120" y="340" width="6" height="20" fill="#A0522D"/>
-  <rect x="210" y="340" width="6" height="20" fill="#A0522D"/>
-  <rect x="300" y="340" width="6" height="20" fill="#A0522D"/>
+  <rect x="48" y="305" width="14" height="38" rx="3" fill="#8B6914"/>
+  <circle cx="55" cy="296" r="24" fill="#228B22"/>
+  <circle cx="50" cy="290" r="16" fill="#2E8B57" opacity="0.6"/>
+  <rect x="298" y="315" width="14" height="35" rx="3" fill="#8B6914"/>
+  <circle cx="305" cy="306" r="22" fill="#2E8B57"/>
+  <circle cx="300" cy="300" r="14" fill="#32CD32" opacity="0.5"/>
+  <!-- Neat fence -->
+  <rect x="10" y="360" width="370" height="5" rx="2" fill="#A0522D"/>
+  <rect x="30" y="348" width="6" height="22" rx="1" fill="#A0522D"/>
+  <rect x="120" y="348" width="6" height="22" rx="1" fill="#A0522D"/>
+  <rect x="210" y="348" width="6" height="22" rx="1" fill="#A0522D"/>
+  <rect x="300" y="348" width="6" height="22" rx="1" fill="#A0522D"/>
+  <!-- Small path -->
+  <rect x="175" y="250" width="40" height="120" rx="6" fill="#C4A97D" opacity="0.5"/>
+  <!-- Butterfly -->
+  <ellipse cx="170" cy="140" rx="6" ry="4" fill="#FFB6C1" opacity="0.7" transform="rotate(-20 170 140)"/>
+  <ellipse cx="178" cy="140" rx="6" ry="4" fill="#FFB6C1" opacity="0.7" transform="rotate(20 178 140)"/>
+  <circle cx="174" cy="141" r="1" fill="#333"/>
   <!-- Label -->
-  <text x="195" y="390" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#2E5E1A">Zone 1 - Restored</text>
+  <text x="195" y="395" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2E5E1A" font-weight="bold">Zone 1 - Restored Garden</text>
 </svg>
