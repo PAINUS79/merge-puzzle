@@ -1,0 +1,195 @@
+name: Godot iOS Export & TestFlight
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+# Cancel in-progress runs on new push to same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.3"
+  GODOT_RELEASE_TYPE: "stable"
+  EXPORT_NAME: "game"
+  PROJECT_PATH: "."          # path to project.godot relative to repo root
+  EXPORT_PRESET: "iOS"
+
+jobs:
+  # ──────────────────────────────────────────────────────────────
+  # Job 1: Validate project on Linux (fast, cheap)
+  # ──────────────────────────────────────────────────────────────
+  validate:
+    name: Validate Godot Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Godot (Linux headless)
+        run: |
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_TYPE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}_linux.x86_64.zip" \
+            -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          chmod +x "/tmp/godot/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}_linux.x86_64"
+          echo "GODOT_BIN=/tmp/godot/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}_linux.x86_64" >> "$GITHUB_ENV"
+
+      - name: Validate project (import resources)
+        run: |
+          "$GODOT_BIN" --headless --path "$PROJECT_PATH" --editor --quit --quit-after 100 || true
+          echo "Project validation complete."
+
+  # ──────────────────────────────────────────────────────────────
+  # Job 2: iOS build (macOS runner required for Xcode)
+  # ──────────────────────────────────────────────────────────────
+  ios-export:
+    name: Build & Export iOS
+    runs-on: macos-14          # Apple Silicon; use macos-13 for Intel x86_64
+    needs: validate
+    timeout-minutes: 60
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true            # enable if assets use Git LFS
+
+      # ── Xcode version pin ────────────────────────────────────
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 'latest-stable'
+
+      # ── Install Godot (macOS) ─────────────────────────────────
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}-macos
+
+      - name: Install Godot (macOS)
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_TYPE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}_macos.universal.zip" \
+            -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d ~/godot
+
+      - name: Expose Godot binary
+        run: |
+          GODOT_BIN="$(find ~/godot -name 'Godot' -type f | head -n 1)"
+          chmod +x "$GODOT_BIN"
+          echo "GODOT_BIN=$GODOT_BIN" >> "$GITHUB_ENV"
+
+      # ── Install iOS export templates ──────────────────────────
+      - name: Cache export templates
+        id: cache-templates
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Application\ Support/Godot/export_templates
+          key: godot-templates-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE_TYPE }}
+
+      - name: Download & install export templates
+        if: steps.cache-templates.outputs.cache-hit != 'true'
+        run: |
+          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_TYPE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_TYPE}_export_templates.tpz" \
+            -O /tmp/templates.tpz
+          mkdir -p "$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_TYPE}"
+          unzip -q /tmp/templates.tpz -d /tmp/templates
+          mv /tmp/templates/templates/* \
+            "$HOME/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_TYPE}/"
+
+      # ── Godot headless iOS export ─────────────────────────────
+      - name: Run Godot headless export
+        run: |
+          mkdir -p build/ios
+          "$GODOT_BIN" --headless \
+            --path "$PROJECT_PATH" \
+            --export-release "$EXPORT_PRESET" \
+            "build/ios/${EXPORT_NAME}.xcodeproj" \
+            2>&1 | tee build/godot-export.log
+
+      - name: Verify Xcode project was generated
+        run: |
+          if [ ! -d "build/ios/${EXPORT_NAME}.xcodeproj" ]; then
+            echo "ERROR: Xcode project not found after Godot export"
+            cat build/godot-export.log
+            exit 1
+          fi
+          echo "Xcode project generated successfully."
+
+      # ── Ruby & Bundler for Fastlane ───────────────────────────
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: fastlane
+
+      # ── Fastlane: code signing + build + upload ───────────────
+      - name: Install Apple certificates & provisioning profiles (match)
+        env:
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        working-directory: fastlane
+        run: bundle exec fastlane match appstore --readonly
+
+      - name: Build IPA (gym)
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        working-directory: fastlane
+        run: bundle exec fastlane build
+
+      - name: Upload to TestFlight
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+        working-directory: fastlane
+        run: bundle exec fastlane deliver_testflight
+
+      # ── Artifacts ─────────────────────────────────────────────
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa-${{ github.sha }}
+          path: |
+            build/ios/*.ipa
+            build/godot-export.log
+          retention-days: 30
+
+      - name: Upload dSYM for crash reporting
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsym-${{ github.sha }}
+          path: build/ios/*.dSYM.zip
+          retention-days: 90

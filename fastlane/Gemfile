@@ -1,0 +1,6 @@
+source "https://rubygems.org"
+
+gem "fastlane"
+
+# Plugins
+# gem "fastlane-plugin-versioning"  # auto-increment build numbers

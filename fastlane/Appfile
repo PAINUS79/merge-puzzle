@@ -1,0 +1,10 @@
+# Fastlane Appfile
+# Docs: https://docs.fastlane.tools/advanced/Appfile/
+
+# Your Apple ID / App Store Connect account email
+# app_identifier is read from ENV['APP_IDENTIFIER'] if not set here
+app_identifier ENV["APP_IDENTIFIER"] || "com.yourcompany.yourgame"
+
+# Team IDs
+team_id         ENV["APPLE_TEAM_ID"]       # Developer Portal team ID (10-char alphanumeric)
+itc_team_id     ENV["ITC_TEAM_ID"]         # App Store Connect team ID (numeric)

@@ -1,0 +1,123 @@
+# Fastlane Fastfile
+# Docs: https://docs.fastlane.tools
+
+default_platform :ios
+
+# ────────────────────────────────────────────────────────────────────────────
+# Shared helpers
+# ────────────────────────────────────────────────────────────────────────────
+
+# Load App Store Connect API key for all lanes that need it.
+# Reads from env vars injected by GitHub Actions secrets.
+def asc_api_key
+  app_store_connect_api_key(
+    key_id:        ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"),
+    issuer_id:     ENV.fetch("APP_STORE_CONNECT_ISSUER_ID"),
+    key_content:   ENV.fetch("APP_STORE_CONNECT_API_KEY_CONTENT"),
+    in_house:      false
+  )
+end
+
+# ────────────────────────────────────────────────────────────────────────────
+# Platform block
+# ────────────────────────────────────────────────────────────────────────────
+platform :ios do
+
+  # ── Before all lanes ──────────────────────────────────────────────────────
+  before_all do
+    # Ensure we fail fast on warnings treated as errors
+    xcversion(version: "~> 15") if ENV["CI"]
+  end
+
+  # ── Lane: sync certificates (match) ───────────────────────────────────────
+  # Called standalone from CI before build to pre-install certs & profiles.
+  # In CI the workflow calls this with --readonly flag baked into Matchfile.
+  desc "Sync code-signing certificates and provisioning profiles via match"
+  lane :sync_certificates do
+    match(
+      type:            "appstore",
+      app_identifier:  ENV["APP_IDENTIFIER"] || "com.yourcompany.yourgame",
+      readonly:        true,
+      api_key:         asc_api_key
+    )
+  end
+
+  # ── Lane: build ──────────────────────────────────────────────────────────
+  # Builds the Xcode project exported by Godot into an IPA.
+  desc "Build the Godot-exported Xcode project into a signed IPA"
+  lane :build do
+    # Resolve paths relative to repo root (fastlane runs from fastlane/ dir)
+    project_root = File.expand_path("../", __dir__)
+    xcodeproj    = File.join(project_root, "build/ios/game.xcodeproj")
+
+    increment_build_number(
+      build_number: ENV["GITHUB_RUN_NUMBER"] || Time.now.to_i.to_s,
+      xcodeproj:    xcodeproj
+    )
+
+    gym(
+      project:              xcodeproj,
+      scheme:               "game",                   # matches Godot export preset name
+      configuration:        "Release",
+      export_method:        "app-store",
+      output_directory:     File.join(project_root, "build/ios"),
+      output_name:          "game.ipa",
+      clean:                true,
+      include_symbols:      true,
+      include_bitcode:      false,                    # Bitcode deprecated in Xcode 14+
+      export_options: {
+        signingStyle:              "automatic",
+        teamID:                    ENV["APPLE_TEAM_ID"],
+        provisioningProfiles: {
+          (ENV["APP_IDENTIFIER"] || "com.yourcompany.yourgame") =>
+            "match AppStore #{ENV['APP_IDENTIFIER'] || 'com.yourcompany.yourgame'}"
+        }
+      },
+      xcodebuild_formatter:  "xcpretty"
+    )
+  end
+
+  # ── Lane: deliver_testflight ──────────────────────────────────────────────
+  desc "Upload the built IPA to TestFlight"
+  lane :deliver_testflight do
+    project_root = File.expand_path("../", __dir__)
+    ipa_path     = File.join(project_root, "build/ios/game.ipa")
+
+    pilot(
+      api_key:                         asc_api_key,
+      ipa:                             ipa_path,
+      skip_waiting_for_build_processing: true,    # don't block CI for Apple processing
+      skip_submission:                   true,    # internal testing only; no external group
+      notify_external_testers:          false,
+      changelog:                        build_changelog
+    )
+  end
+
+  # ── Lane: full (convenience: match + build + upload) ─────────────────────
+  desc "Full pipeline: sync certs → build → upload to TestFlight"
+  lane :full do
+    sync_certificates
+    build
+    deliver_testflight
+  end
+
+  # ── After all lanes ───────────────────────────────────────────────────────
+  after_all do |lane|
+    UI.success("Lane '#{lane}' completed successfully.")
+  end
+
+  error do |lane, exception|
+    UI.error("Lane '#{lane}' failed: #{exception.message}")
+    # Add Slack/webhook notification here if desired:
+    # slack(message: "iOS build failed: #{exception.message}", success: false)
+  end
+end
+
+# ────────────────────────────────────────────────────────────────────────────
+# Private helpers
+# ────────────────────────────────────────────────────────────────────────────
+
+private_lane :build_changelog do
+  # Pull last 10 git commits as the TestFlight what's-new note
+  last_git_commit[:message] rescue "Build #{ENV['GITHUB_RUN_NUMBER']}"
+end

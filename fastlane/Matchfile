@@ -1,0 +1,22 @@
+# Fastlane Matchfile
+# Docs: https://docs.fastlane.tools/actions/match/
+
+# Private git repository for storing encrypted certificates & profiles.
+# Set via secret MATCH_GIT_URL in GitHub Actions.
+git_url         ENV["MATCH_GIT_URL"]
+
+# Authentication for the match git repo (base64-encoded "user:token")
+git_basic_authorization ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
+
+# Type: appstore | adhoc | development | enterprise
+# The CI workflow calls `match appstore` for TestFlight distribution.
+type            "appstore"
+
+app_identifier  [ENV["APP_IDENTIFIER"] || "com.yourcompany.yourgame"]
+
+# Use read-only mode in CI to avoid certificate rotation accidents.
+readonly        true
+
+# Keychain settings for CI (GitHub Actions provides a fresh keychain per job)
+keychain_name     "CI"
+keychain_password ENV["KEYCHAIN_PASSWORD"] || "ci-keychain"
