@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GODOT_VERSION: "4.3"
+  GODOT_VERSION: "4.4"
   GODOT_RELEASE_TYPE: "stable"
   EXPORT_NAME: "game"
   PROJECT_PATH: "."          # path to project.godot relative to repo root
