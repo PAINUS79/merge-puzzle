@@ -1,0 +1,27 @@
+# Godot 4 specific ignores
+.godot/
+*.translation
+
+# Godot export
+export/
+*.pck
+*.zip
+
+# Mono/C# (if using)
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS generated
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Import backups
+*.import.bak
